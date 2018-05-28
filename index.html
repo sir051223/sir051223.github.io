@@ -263,6 +263,162 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/28/linux/redis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/28/linux/redis/" itemprop="url">redis安全设置</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-28T17:08:58+08:00">
+                2018-05-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>Redis的安全设计是在”Redis运行在可信环境”这个前提下做出的，在生产环境运行时不能允许外界直接连接到Redis服务器上，而应该通过应用程序进行中转，运行在可信的环境中是保证Redis安全的最重要方法。</p>
+<p>在洞悉漏洞官网中，有一个漏洞叫“Redis 未授权访问缺陷可轻易导致系统被黑”，链接<a href="https://www.seebug.org/vuldb/ssvid-89715。可见redis安全的重要性" target="_blank" rel="external">https://www.seebug.org/vuldb/ssvid-89715。可见redis安全的重要性</a></p>
+<h3 id="1-为redis设置密码"><a href="#1-为redis设置密码" class="headerlink" title="1.为redis设置密码"></a>1.为redis设置密码</h3><p>在redis.conf中进行配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">requirepass redispwd  <span class="comment"># redispwd即为redis的启动密码,在设置时，一定要选择复杂性高的密码</span></div></pre></td></tr></table></figure>
+<h3 id="2-危险命令重命名或禁用"><a href="#2-危险命令重命名或禁用" class="headerlink" title="2.危险命令重命名或禁用"></a>2.危险命令重命名或禁用</h3><p>在redis.conf中进行配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">rename-command CONFIG rename_config   <span class="comment"># 重命名CONFIG命令  </span></div><div class="line">rename-command SAVE <span class="string">""</span>  <span class="comment"># 禁用SAVE命令</span></div></pre></td></tr></table></figure>
+<h3 id="3-配置bind选项-限定可以连接Redis服务器的IP"><a href="#3-配置bind选项-限定可以连接Redis服务器的IP" class="headerlink" title="3.配置bind选项, 限定可以连接Redis服务器的IP"></a>3.配置bind选项, 限定可以连接Redis服务器的IP</h3><p>在redis.conf中进行配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">bind</span> 127.0.0.1  <span class="comment"># 限定只能本地访问</span></div></pre></td></tr></table></figure>
+<h3 id="4-使用低权限用户启动redis"><a href="#4-使用低权限用户启动redis" class="headerlink" title="4.使用低权限用户启动redis"></a>4.使用低权限用户启动redis</h3><p>先停止redis，然后切换至低权限用户身份，su lowuser，执行启动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/path/redis/bin/redis-server /path/redis/etc/redis.conf</div></pre></td></tr></table></figure>
+<p>会出现 cannot create: Permission denied 报错，解决办法为赋予权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chown -R lowgroup.lowuser /path/redis</div></pre></td></tr></table></figure>
+<h3 id="5-修改redis默认端口号"><a href="#5-修改redis默认端口号" class="headerlink" title="5.修改redis默认端口号"></a>5.修改redis默认端口号</h3><p>redis默认端口号为6379，在redis.conf配置文件修改为其它端口号</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">port 63791</div></pre></td></tr></table></figure>
+<p>如果是云服务器，可以要在云服务器管理后台开启关闭对应redis的出网端口</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/06/php/queue/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1581,7 +1737,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1636,7 +1792,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
