@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="一、安装soap扩展1234567891011121314151617181920211、Linux下安装soap模块      查看soap模块是否安装的办法：在php的安装目录下运行php -m来查看   $phppath/bin/php -m | grep soap   如果没有安装，则进入php的安装源文件夹   cd php-$version/ext/soap   // 进入文件夹后执行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php通过SoapClient调用webservice接口以及注意项">
+<meta property="og:url" content="http://yoursite.com/2018/06/21/php/soap/index.html">
+<meta property="og:site_name" content="Forest">
+<meta property="og:description" content="一、安装soap扩展1234567891011121314151617181920211、Linux下安装soap模块      查看soap模块是否安装的办法：在php的安装目录下运行php -m来查看   $phppath/bin/php -m | grep soap   如果没有安装，则进入php的安装源文件夹   cd php-$version/ext/soap   // 进入文件夹后执行">
+<meta property="og:updated_time" content="2018-06-21T10:23:05.530Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="php通过SoapClient调用webservice接口以及注意项">
+<meta name="twitter:description" content="一、安装soap扩展1234567891011121314151617181920211、Linux下安装soap模块      查看soap模块是否安装的办法：在php的安装目录下运行php -m来查看   $phppath/bin/php -m | grep soap   如果没有安装，则进入php的安装源文件夹   cd php-$version/ext/soap   // 进入文件夹后执行">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/21/php/soap/"/>
+
+
+
+
+
+  <title>php通过SoapClient调用webservice接口以及注意项 | Forest</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Forest</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/21/php/soap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">php通过SoapClient调用webservice接口以及注意项</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-21T17:11:37+08:00">
+                2018-06-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Php/" itemprop="url" rel="index">
+                    <span itemprop="name">Php</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="一、安装soap扩展"><a href="#一、安装soap扩展" class="headerlink" title="一、安装soap扩展"></a>一、安装soap扩展</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">1、Linux下安装soap模块</div><div class="line">   </div><div class="line">   查看soap模块是否安装的办法：在php的安装目录下运行php -m来查看</div><div class="line">   <span class="variable">$phppath</span>/bin/php -m | grep soap</div><div class="line"></div><div class="line">   如果没有安装，则进入php的安装源文件夹</div><div class="line">   <span class="built_in">cd</span> php-<span class="variable">$version</span>/ext/soap</div><div class="line">   // 进入文件夹后执行</div><div class="line">   <span class="variable">$phppath</span>/bin/phpize    </div><div class="line"></div><div class="line">   然后安装编译</div><div class="line">   make &amp; make install </div><div class="line"></div><div class="line">   安装好之后会提示soap.so文件的保存路径</div><div class="line"></div><div class="line">   接着修改php.ini文件</div><div class="line">   ;extension=soap.so</div><div class="line">   去掉前面的;</div><div class="line"></div><div class="line">   重启apache或者php-fpm</div><div class="line">   service httpd restart 或者 /etc/init.d/php-fpm restart</div></pre></td></tr></table></figure>
+<h3 id="二、客户端调用示例代码"><a href="#二、客户端调用示例代码" class="headerlink" title="二、客户端调用示例代码"></a>二、客户端调用示例代码</h3><p>1、无SoapHeader认证的情况</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">   try&#123;</div><div class="line">    <span class="variable">$client</span> = new SoapClient(<span class="string">'http://www.whatever.com/WebService.asmx?wsdl'</span>);</div><div class="line">    <span class="variable">$result</span> = <span class="variable">$client</span>-&gt;toDo(<span class="variable">$paramArr</span>);</div><div class="line">    <span class="variable">$result</span> = simplexml_load_string(<span class="variable">$result</span>-&gt;toDoResult);</div><div class="line">    <span class="variable">$state</span> = <span class="variable">$result</span>-&gt;smsstate;</div><div class="line">&#125;catch (SoapFault <span class="variable">$fault</span>)&#123;&#125;</div><div class="line"><span class="built_in">echo</span> <span class="variable">$state</span>;</div></pre></td></tr></table></figure>
+<p>2、有SoapHeader验证的情况</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">   <span class="variable">$soap</span> = new \SoapClient(<span class="string">'http://www.whatever.com/WebService.asmx?wsdl'</span>);</div><div class="line"></div><div class="line">/*</div><div class="line"> *SoapHeader参数说明如下所示:</div><div class="line"> *<span class="string">'http://tempuri.org/'</span>   namespace(命名空间可省略 根据服务端定)</div><div class="line"> *<span class="string">'MySoapHeader'</span>          SoapHeader头的类名</div><div class="line"> *<span class="string">'array(...)'</span>            存放标识身份的字符串参数</div><div class="line"> *<span class="string">'true'</span>                  是否必须处理该header</div><div class="line">*/</div><div class="line"></div><div class="line"><span class="variable">$head</span> = new \SoapHeader(http://tempuri.org/<span class="string">', '</span>MySoapHeader<span class="string">', array('</span>uname<span class="string">'=&gt;'</span>admin<span class="string">','</span><span class="built_in">pwd</span><span class="string">'=&gt;'</span>123456<span class="string">'), true);</span></div><div class="line"></div><div class="line">//添加soapheader</div><div class="line">$soap-&gt;__setSoapHeaders($head);</div><div class="line"></div><div class="line">//调取需要的webservice方法</div><div class="line">$res = $s-&gt;toDo(array('param<span class="string">'=&gt;'</span>val<span class="string">'));</span></div><div class="line"></div><div class="line">echo $res-&gt;toDoResult;</div></pre></td></tr></table></figure>
+<h3 id="三、参数值传输接收不到的情况"><a href="#三、参数值传输接收不到的情况" class="headerlink" title="三、参数值传输接收不到的情况"></a>三、参数值传输接收不到的情况</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">第一次传递的参数，在服务端接收参数正常，修改参数名后，给参数赋值，在服务端出现接收不到参数值的现象</div><div class="line"></div><div class="line">调试1：安装soapui，发起调用 -&gt; 调用正常  判断：排除服务器端问题</div><div class="line"></div><div class="line">调试2：将参数值修改为固定字符串值，再发起调用 -&gt; 依然接收不到 判断：排除参数赋值失效</div><div class="line"></div><div class="line">调试3：改变参数位置，再发起调用 -&gt; 依然接收不到  判断：排除参数位置影响</div><div class="line"></div><div class="line">调试4：删除runtime缓存文件，再发起调用 -&gt; 依然接收不到  判断：排除程序缓存文件影响</div><div class="line"></div><div class="line">调试5：重启apache或php-fpm，再发起调用 -&gt; 依然接收不到  判断：排除web服务器环境问题</div><div class="line"></div><div class="line">调试6：本地wamp环境，发起调用 -&gt; 接收正常  判断：soap环境差异问题导致，查找到是soap缓存的问题</div><div class="line"></div><div class="line">修改代码</div><div class="line"></div><div class="line"><span class="variable">$soap</span> = new \SoapClient(<span class="string">'http://www.whatever.com/WebService.asmx?wsdl'</span>);</div><div class="line"></div><div class="line">为</div><div class="line"></div><div class="line"><span class="variable">$soap</span> = new \SoapClient(<span class="string">'http://www.whatever.com/WebService.asmx?wsdl'</span>, array(<span class="string">'cache_wsdl'</span> =&gt; 0));</div><div class="line"></div><div class="line">发起调用 -&gt; 接收正常</div></pre></td></tr></table></figure>
+<h3 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">参数名接收到，但参数值接收不到，这很怪异，一开始没有怀疑缓存原因，归根到底是对soap的基础理解得不够深刻。使用排除法定位问题的</div><div class="line">速度还是比较局限。透过现象去了解程序的本质，设计思想，对于分析、解决问题有很大的帮助</div></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/13/essay/mother/" rel="next" title="母亲">
+                <i class="fa fa-chevron-left"></i> 母亲
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="sir051223" />
+          <p class="site-author-name" itemprop="name">sir051223</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、安装soap扩展"><span class="nav-number">1.</span> <span class="nav-text">一、安装soap扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、客户端调用示例代码"><span class="nav-number">2.</span> <span class="nav-text">二、客户端调用示例代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、参数值传输接收不到的情况"><span class="nav-number">3.</span> <span class="nav-text">三、参数值传输接收不到的情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五、总结"><span class="nav-number">4.</span> <span class="nav-text">五、总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sir051223</span>
+
+  
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
