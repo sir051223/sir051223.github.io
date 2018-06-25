@@ -263,6 +263,150 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/25/sql/changepwd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/25/sql/changepwd/" itemprop="url">修改mysql数据库的密码</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-25T16:45:47+08:00">
+                2018-06-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Sql/" itemprop="url" rel="index">
+                    <span itemprop="name">Sql</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="一、用SET-PASSWORD命令"><a href="#一、用SET-PASSWORD命令" class="headerlink" title="一、用SET PASSWORD命令"></a>一、用SET PASSWORD命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">首先登录MySQL</div><div class="line"></div><div class="line">格式：mysql&gt; <span class="built_in">set</span> password <span class="keyword">for</span> 用户名@localhost = password(<span class="string">'新密码'</span>);  </div><div class="line"></div><div class="line">例子：mysql&gt; <span class="built_in">set</span> password <span class="keyword">for</span> root@localhost = password(<span class="string">'123'</span>);</div></pre></td></tr></table></figure>
+<h3 id="二、用mysqladmin"><a href="#二、用mysqladmin" class="headerlink" title="二、用mysqladmin"></a>二、用mysqladmin</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">格式：mysqladmin -u用户名 -p旧密码 password 新密码  </div><div class="line"></div><div class="line">例子：mysqladmin -uroot -p123456 password 123</div></pre></td></tr></table></figure>
+<h3 id="三、用UPDATE直接编辑user表"><a href="#三、用UPDATE直接编辑user表" class="headerlink" title="三、用UPDATE直接编辑user表"></a>三、用UPDATE直接编辑user表</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">首先登录MySQL。  </div><div class="line"></div><div class="line">mysql&gt; use mysql;  </div><div class="line"></div><div class="line">mysql&gt; update user <span class="built_in">set</span> password=password(<span class="string">'123'</span>) <span class="built_in">where</span> user=<span class="string">'root'</span> and host=<span class="string">'localhost'</span>;  </div><div class="line"></div><div class="line">mysql&gt; flush privileges;</div></pre></td></tr></table></figure>
+<h3 id="五、忘记root密码"><a href="#五、忘记root密码" class="headerlink" title="五、忘记root密码"></a>五、忘记root密码</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">1．修改MySQL的登录设置：</div><div class="line">在[mysqld]的段中加上一句：skip-grant-tables </div><div class="line"></div><div class="line">	vi /etc/my.cnf</div><div class="line"></div><div class="line">	[mysqld] </div><div class="line">	datadir=/var/lib/mysql </div><div class="line">	socket=/var/lib/mysql/mysql.sock </div><div class="line">	skip-grant-tables</div><div class="line"> </div><div class="line">2. 重启服务</div><div class="line">service mysql restart</div><div class="line"></div><div class="line">3. 修改 root 密码</div><div class="line"></div><div class="line">mysql -u root -p</div><div class="line"></div><div class="line">mysql&gt; USE mysql;</div><div class="line">mysql&gt; UPDATE user SET Password = password(<span class="string">'123456'</span>) WHERE User = <span class="string">'root'</span>;</div><div class="line">mysql&gt; flush privileges;</div><div class="line">mysql&gt; quit;</div><div class="line"></div><div class="line">4. 删除刚刚新增加的 skip-grant-tables </div><div class="line"></div><div class="line">vi /etc/my.cnf</div><div class="line"></div><div class="line">5. 重启服务</div><div class="line">service mysql restart</div><div class="line"></div><div class="line"></div><div class="line">mysql -u root -p</div><div class="line"></div><div class="line">SET PASSWORD = PASSWORD(<span class="string">'whatyoulike'</span>);</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/21/php/soap/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1563,151 +1707,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/16/linux/collect/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sir051223">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Forest">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/16/linux/collect/" itemprop="url">好资源收藏</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-16T12:33:31+08:00">
-                2017-08-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="I-LIKE"><a href="#I-LIKE" class="headerlink" title="I LIKE"></a>I LIKE</h2><h3 id="工作–code"><a href="#工作–code" class="headerlink" title="工作–code"></a>工作–code</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">https://github.com/ksky521/nodeppt    PPT制作</div><div class="line"></div><div class="line">https://github.com/geekcompany/ResumeSample/blob/master/php.md    技术简历</div><div class="line"></div><div class="line">https://github.com/geekcompany/DeerResume    Markdown简历神器</div></pre></td></tr></table></figure>
-<h3 id="管理"><a href="#管理" class="headerlink" title="管理"></a>管理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.sohu.com/</div></pre></td></tr></table></figure>
-<h3 id="开发"><a href="#开发" class="headerlink" title="开发"></a>开发</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://www.swoole.com/    swoole</div></pre></td></tr></table></figure>
-<h3 id="文学"><a href="#文学" class="headerlink" title="文学"></a>文学</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.ustc.edu.cn/</div></pre></td></tr></table></figure>
-<h3 id="未完待续"><a href="#未完待续" class="headerlink" title="未完待续"></a>未完待续</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.aliyun.com/</div></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1758,7 +1757,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1769,7 +1768,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
