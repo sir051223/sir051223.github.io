@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="一、如果没有使用代理服务器123456REMOTE_ADDR = 客户端IP    HTTP_X_FORWARDED_FOR = 没数值或不显示&amp;lt;?php   $ip = $_SERVER[&apos;REMOTE_ADDR&apos;];echo $ip;
+二、使用透明代理1234567891011REMOTE_ADDR = 最后一个代理服务器 IPHTTP_X_FORWARDED_FOR = 客户端真实 I">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php如何获取ip地址">
+<meta property="og:url" content="http://yoursite.com/2018/08/10/php/getClientIp/index.html">
+<meta property="og:site_name" content="Forest">
+<meta property="og:description" content="一、如果没有使用代理服务器123456REMOTE_ADDR = 客户端IP    HTTP_X_FORWARDED_FOR = 没数值或不显示&amp;lt;?php   $ip = $_SERVER[&apos;REMOTE_ADDR&apos;];echo $ip;
+二、使用透明代理1234567891011REMOTE_ADDR = 最后一个代理服务器 IPHTTP_X_FORWARDED_FOR = 客户端真实 I">
+<meta property="og:updated_time" content="2018-08-10T08:34:33.159Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="php如何获取ip地址">
+<meta name="twitter:description" content="一、如果没有使用代理服务器123456REMOTE_ADDR = 客户端IP    HTTP_X_FORWARDED_FOR = 没数值或不显示&amp;lt;?php   $ip = $_SERVER[&apos;REMOTE_ADDR&apos;];echo $ip;
+二、使用透明代理1234567891011REMOTE_ADDR = 最后一个代理服务器 IPHTTP_X_FORWARDED_FOR = 客户端真实 I">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/08/10/php/getClientIp/"/>
+
+
+
+
+
+  <title>php如何获取ip地址 | Forest</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Forest</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/10/php/getClientIp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">php如何获取ip地址</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-10T12:29:47+08:00">
+                2018-08-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Php/" itemprop="url" rel="index">
+                    <span itemprop="name">Php</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="一、如果没有使用代理服务器"><a href="#一、如果没有使用代理服务器" class="headerlink" title="一、如果没有使用代理服务器"></a>一、如果没有使用代理服务器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">REMOTE_ADDR = 客户端IP    HTTP_X_FORWARDED_FOR = 没数值或不显示</div><div class="line"></div><div class="line">&lt;?php   </div><div class="line"></div><div class="line"><span class="variable">$ip</span> = <span class="variable">$_SERVER</span>[<span class="string">'REMOTE_ADDR'</span>];</div><div class="line"><span class="built_in">echo</span> <span class="variable">$ip</span>;</div></pre></td></tr></table></figure>
+<h3 id="二、使用透明代理"><a href="#二、使用透明代理" class="headerlink" title="二、使用透明代理"></a>二、使用透明代理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">REMOTE_ADDR = 最后一个代理服务器 IP</div><div class="line"></div><div class="line">HTTP_X_FORWARDED_FOR = 客户端真实 IP （经过多个代理服务器时，这个值类似：221.5.252.160， 203.98.182.13， 203.129.72.25）</div><div class="line"></div><div class="line">这类代理还会将客户真实ip发送到请求对象，无法隐藏真实ip。</div><div class="line"></div><div class="line">&lt;?php   </div><div class="line"></div><div class="line">　<span class="variable">$ip</span> = <span class="variable">$_SERVER</span>[<span class="string">'HTTP_X_FORWARDED_FOR'</span>];</div><div class="line">  <span class="built_in">echo</span> <span class="variable">$ip</span>;</div></pre></td></tr></table></figure>
+<h3 id="三、使用普通匿名代理服务器"><a href="#三、使用普通匿名代理服务器" class="headerlink" title="三、使用普通匿名代理服务器"></a>三、使用普通匿名代理服务器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">REMOTE_ADDR = 最后一个代理服务器 IP</div><div class="line"></div><div class="line">HTTP_X_FORWARDED_FOR = 代理服务器 IP （经过多个代理服务器时，这个值类似：203.98.182.163， 203.98.182.13， 203.129.72.25）</div><div class="line"></div><div class="line">这样就隐藏了客户端的真实ip，但服务器会知道客户端是通过代理服务器去访问的。</div></pre></td></tr></table></figure>
+<h3 id="四、使用欺骗性代理服务器"><a href="#四、使用欺骗性代理服务器" class="headerlink" title="四、使用欺骗性代理服务器"></a>四、使用欺骗性代理服务器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">EMOTE_ADDR = 代理服务器 IP</div><div class="line"></div><div class="line">HTTP_X_FORWARDED_FOR = 随机的 IP（经过多个代理服务器时，这个值类似：220.4.251.159， 203.98.182.13， 203.129.72.25）</div><div class="line"></div><div class="line">服务器可以识别到时通过代理服务器访问的，但发送给目标服务器的是虚假ip。</div></pre></td></tr></table></figure>
+<h3 id="五、使用高匿名代理"><a href="#五、使用高匿名代理" class="headerlink" title="五、使用高匿名代理"></a>五、使用高匿名代理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">REMOTE_ADDR = 代理服务器 IP       HTTP_X_FORWARDED_FOR = 没数值或不显示</div><div class="line"></div><div class="line">使用这种代理时，不同浏览器不同设备会返回不同的ip头信息，因此PHP使用<span class="variable">$_SERVER</span>[<span class="string">"REMOTE_ADDR"</span>] 、<span class="variable">$_SERVER</span>[<span class="string">"HTTP_X_FORWARDED_FOR"</span>] 获取的值可能是空值也可能是“unknown”值。</div></pre></td></tr></table></figure>
+<h3 id="六、PHP获取ip代码如下"><a href="#六、PHP获取ip代码如下" class="headerlink" title="六、PHP获取ip代码如下"></a>六、PHP获取ip代码如下</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * 获取客户端IP地址</div><div class="line"> * @<span class="built_in">return</span> mixed</div><div class="line"> */</div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">getClientIp</span></span>() </div><div class="line">&#123;</div><div class="line">    <span class="variable">$ip</span> = <span class="string">""</span>;</div><div class="line">    <span class="keyword">if</span> (getenv(<span class="string">'HTTP_CLIENT_IP'</span>) &amp;&amp; strcasecmp(getenv(<span class="string">'HTTP_CLIENT_IP'</span>), <span class="string">'unknown'</span>)) &#123;</div><div class="line">        <span class="variable">$ip</span> = getenv(<span class="string">'HTTP_CLIENT_IP'</span>);</div><div class="line">    &#125; elseif (getenv(<span class="string">'HTTP_X_FORWARDED_FOR'</span>) &amp;&amp; strcasecmp(getenv(<span class="string">'HTTP_X_FORWARDED_FOR'</span>), <span class="string">'unknown'</span>)) &#123;</div><div class="line">        <span class="variable">$ip</span> = getenv(<span class="string">'HTTP_X_FORWARDED_FOR'</span>);</div><div class="line">    &#125; elseif (getenv(<span class="string">'REMOTE_ADDR'</span>) &amp;&amp; strcasecmp(getenv(<span class="string">'REMOTE_ADDR'</span>), <span class="string">'unknown'</span>)) &#123;</div><div class="line">        <span class="variable">$ip</span> = getenv(<span class="string">'REMOTE_ADDR'</span>);</div><div class="line">    &#125; elseif (isset(<span class="variable">$_SERVER</span>[<span class="string">'REMOTE_ADDR'</span>]) &amp;&amp; <span class="variable">$_SERVER</span>[<span class="string">'REMOTE_ADDR'</span>] &amp;&amp; strcasecmp(<span class="variable">$_SERVER</span>[<span class="string">'REMOTE_ADDR'</span>], <span class="string">'unknown'</span>)) &#123;</div><div class="line">        <span class="variable">$ip</span> = <span class="variable">$_SERVER</span>[<span class="string">'REMOTE_ADDR'</span>];</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">return</span> <span class="variable">$ip</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/10/php/mapapi/" rel="next" title="获取地理位置信息的接口">
+                <i class="fa fa-chevron-left"></i> 获取地理位置信息的接口
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/10/miniprogram/collect/" rel="prev" title="微信小程序数据列表的收藏与取消收藏操作">
+                微信小程序数据列表的收藏与取消收藏操作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="sir051223" />
+          <p class="site-author-name" itemprop="name">sir051223</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、如果没有使用代理服务器"><span class="nav-number">1.</span> <span class="nav-text">一、如果没有使用代理服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、使用透明代理"><span class="nav-number">2.</span> <span class="nav-text">二、使用透明代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、使用普通匿名代理服务器"><span class="nav-number">3.</span> <span class="nav-text">三、使用普通匿名代理服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、使用欺骗性代理服务器"><span class="nav-number">4.</span> <span class="nav-text">四、使用欺骗性代理服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五、使用高匿名代理"><span class="nav-number">5.</span> <span class="nav-text">五、使用高匿名代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#六、PHP获取ip代码如下"><span class="nav-number">6.</span> <span class="nav-text">六、PHP获取ip代码如下</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sir051223</span>
+
+  
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
