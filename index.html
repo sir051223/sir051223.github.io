@@ -263,6 +263,197 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/19/linux/nfs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/19/linux/nfs/" itemprop="url">Linux Centos 7下NFS服务器的搭建与配置</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-19T12:26:01+08:00">
+                2018-10-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="一、NFS服务简介"><a href="#一、NFS服务简介" class="headerlink" title="一、NFS服务简介"></a>一、NFS服务简介</h2><p>NFS 就是 Network FileSystem 的缩写，最早之前是由sun 这家公司所发展出来的。 它最大的功能就是可以透过网络，让不同的机器、不同的操作系统、可以彼此分享个别的档案 (share files)。所以，你也可以简单的将他看做是一个文件服务器 (file server) 呢！这个 NFS 服务器可以让你的 PC 来将网络远程的 NFS 服务器分享的目录，挂载到本地端的机器当中， 在本地端的机器看起来，那个远程主机的目录就好像是自己的一个磁盘分区槽一样 (partition)！使用上面相当的便利！</p>
+<p>因为 NFS 支持的功能相当的多，而不同的功能都会使用不同的程序来启动， 每启动一个功能就会启用一些端口来传输数据，因此， NFS 的功能所对应的端口才没有固定住， 而是随机取用一些未被使用的小于 1024 的端口来作为传输之用。但如此一来又造成客户端想要连上服务器时的困扰， 因为客户端得要知道服务器端的相关端口才能够联机吧！</p>
+<p>此时我们就得需要远程过程调用 (RPC) 的服务啦！RPC 最主要的功能就是在指定每个 NFS 功能所对应的 port number ，并且回报给客户端，让客户端可以连结到正确的端口上去。 那 RPC 又是如何知道每个 NFS 的端口呢？这是因为当服务器在启动 NFS 时会随机取用数个端口，并主动的向 RPC 注册，因此 RPC 可以知道每个端口对应的 NFS 功能，然后 RPC 又是固定使用 port 111 来监听客户端的需求并回报客户端正确的端口， 所以当然可以让 NFS 的启动更为轻松愉快了！</p>
+<p>所以你要注意，要启动 NFS 之前，RPC 就要先启动了，否则 NFS 会无法向 RPC 注册。 另外，RPC 若重新启动时，原本注册的数据会不见，因此 RPC 重新启动后，它管理的所有服务都需要重新启动来重新向 RPC 注册。</p>
+<p>当客户端有 NFS 档案存取需求时，他会如何向服务器端要求数据呢？<br>1、客户端会向服务器端的 RPC (port 111) 发出 NFS 档案存取功能的询问要求；<br>2、服务器端找到对应的已注册的 NFS daemon 端口后，会回报给客户端；<br>3、客户端了解正确的埠口后，就可以直接与 NFS daemon 来联机。</p>
+<p>由于 NFS 的各项功能都必须要向 RPC 来注册，如此一来 RPC 才能了解 NFS 这个服务的各项功能之 port number, PID, NFS 在服务器所监听的 IP 等等，而客户端才能够透过 RPC 的询问找到正确对应的埠口。 也就是说，NFS 必须要有 RPC 存在时才能成功的提供服务，因此我们称 NFS 为 RPC server 的一种。事实上，有很多这样的服务器都是向 RPC 注册的，举例来说，NIS (Network Information Service) 也是 RPC server 的一种呢</p>
+<h2 id="二、所需要的软件及软件结构"><a href="#二、所需要的软件及软件结构" class="headerlink" title="二、所需要的软件及软件结构"></a>二、所需要的软件及软件结构</h2><p>要设定好 NFS 服务器我们必须要有两个软件才行，分别是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1.RPC 主程序：rpcbind</div><div class="line"></div><div class="line">2.NFS 主程序：nfs-utils</div></pre></td></tr></table></figure>
+<p>NFS 记录文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">1.主要配置文件：/etc/exports</div><div class="line"></div><div class="line">2.NFS 文件系统维护指令：/usr/sbin/exportfs</div><div class="line"></div><div class="line">3.分享资源的登录档：/var/lib/nfs/*tab</div><div class="line"></div><div class="line">4.客户端查询服务器分享资源的指令：/usr/sbin/showmount</div></pre></td></tr></table></figure>
+<h2 id="三、系统环境"><a href="#三、系统环境" class="headerlink" title="三、系统环境"></a>三、系统环境</h2><p>系统CentOS7.1</p>
+<p>服务器端IP 192.168.214.71<br>客户端IP   192.168.214.81</p>
+<h2 id="四、服务器端安装NFS服务"><a href="#四、服务器端安装NFS服务" class="headerlink" title="四、服务器端安装NFS服务"></a>四、服务器端安装NFS服务</h2><h4 id="1-查看系统是否已安装NFS"><a href="#1-查看系统是否已安装NFS" class="headerlink" title="1.查看系统是否已安装NFS"></a>1.查看系统是否已安装NFS</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@bingo ~]<span class="comment"># rpm -qa | grep nfs</span></div><div class="line">[root@bingo ~]<span class="comment"># rpm -qa | grep rpcbind</span></div></pre></td></tr></table></figure>
+<h4 id="2-安装NFS"><a href="#2-安装NFS" class="headerlink" title="2.安装NFS"></a>2.安装NFS</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@bingo ~]<span class="comment"># yum -y install nfs-utils rpcbind</span></div><div class="line">已加载插件：fastestmirror</div><div class="line">设置安装进程</div><div class="line">Loading mirror speeds from cached hostfile</div><div class="line">... ...                        </div><div class="line"></div><div class="line">完毕！</div></pre></td></tr></table></figure>
+<h2 id="五、服务端配置"><a href="#五、服务端配置" class="headerlink" title="五、服务端配置"></a>五、服务端配置</h2><h4 id="1-在NFS服务端上创建共享目录-opt-files-lys并设置权限"><a href="#1-在NFS服务端上创建共享目录-opt-files-lys并设置权限" class="headerlink" title="1.在NFS服务端上创建共享目录/opt/files/lys并设置权限"></a>1.在NFS服务端上创建共享目录/opt/files/lys并设置权限</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@bingo ~]<span class="comment"># mkdir -p /opt/files/lys</span></div><div class="line">[root@bingo ~]<span class="comment"># ll /opt/files/</span></div><div class="line">总用量 4</div><div class="line">drwxr-xr-x. 2 root root 4096 10月 21 18:10 lys</div><div class="line">[root@bingo ~]<span class="comment"># chmod 666 /opt/files/lys</span></div></pre></td></tr></table></figure>
+<h4 id="2-编辑export文件"><a href="#2-编辑export文件" class="headerlink" title="2.编辑export文件"></a>2.编辑export文件</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@bingo ~]<span class="comment"># vim /etc/exports </span></div><div class="line"></div><div class="line">/opt/files/lys 192.168.214.0/24(rw,no_root_squash,no_all_squash,sync)</div><div class="line"></div><div class="line">/opt/web/xxx   192.168.214.*(rw,sync,no_root_squash)  <span class="comment">#可挂载文件夹可设置多个</span></div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">常见的参数则有：</div><div class="line"></div><div class="line">参数值    内容说明</div><div class="line">rw　ro    该目录分享的权限是可擦写 (<span class="built_in">read</span>-write) 或只读 (<span class="built_in">read</span>-only)，但最终能不能读写，还是与文件系统的 rwx 及身份有关。</div><div class="line"></div><div class="line">sync　async    sync代表数据会同步写入到内存与硬盘中，async 则代表数据会先暂存于内存当中，而非直接写入硬盘！</div><div class="line"></div><div class="line">no_root_squash　root_squash    客户端使用 NFS 文件系统的账号若为 root 时，系统该如何判断这个账号的身份？预设的情况下，</div><div class="line">客户端 root 的身份会由 root_squash 的设定压缩成 nfsnobody， 如此对服务器的系统会较有保障。但如果你想要开放客户端使用 </div><div class="line">root 身份来操作服务器的文件系统，那么这里就得要开 no_root_squash 才行！</div><div class="line"></div><div class="line">all_squash    不论登入 NFS 的使用者身份为何， 他的身份都会被压缩成为匿名用户，通常也就是 nobody(nfsnobody) </div><div class="line"></div><div class="line">anonuid　　anongid    anon 意指 anonymous (匿名者) 前面关于 *_squash 提到的匿名用户的 UID 设定值，通常为 nobody</div><div class="line">(nfsnobody)，但是你可以自行设定这个 UID 的值！当然，这个 UID 必需要存在于你的 /etc/passwd 当中！ anonuid 指的是 </div><div class="line">UID 而 anongid 则是群组的 GID 。</div></pre></td></tr></table></figure>
+<h4 id="3-配置生效"><a href="#3-配置生效" class="headerlink" title="3.配置生效"></a>3.配置生效</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root@bingo lys]<span class="comment"># exportfs -r</span></div></pre></td></tr></table></figure>
+<h4 id="4-启动rpcbind、nfs服务"><a href="#4-启动rpcbind、nfs服务" class="headerlink" title="4.启动rpcbind、nfs服务"></a>4.启动rpcbind、nfs服务</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@bingo lys]<span class="comment"># service rpcbind start</span></div><div class="line">正在启动 rpcbind：                                         [确定]</div><div class="line">[root@bingo lys]<span class="comment"># service nfs start</span></div><div class="line">启动 NFS 服务：                                            [确定]</div><div class="line">启动 NFS mountd：                                          [确定]</div><div class="line">启动 NFS 守护进程：                                        [确定]</div><div class="line">正在启动 RPC idmapd：                                      [确定]</div></pre></td></tr></table></figure>
+<h4 id="5-查看-RPC-服务的注册状况"><a href="#5-查看-RPC-服务的注册状况" class="headerlink" title="5.查看 RPC 服务的注册状况"></a>5.查看 RPC 服务的注册状况</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@bingo lys]<span class="comment"># rpcinfo -p localhost</span></div><div class="line">   program vers proto   port  service</div><div class="line">    100000    4   tcp    111  portmapper</div><div class="line">    .</div><div class="line">    .</div><div class="line">    .</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">选项与参数：</div><div class="line">-p ：针对某 IP (未写则预设为本机) 显示出所有的 port 与 porgram 的信息；</div><div class="line">-t ：针对某主机的某支程序检查其 TCP 封包所在的软件版本；</div><div class="line">-u ：针对某主机的某支程序检查其 UDP 封包所在的软件版本；</div><div class="line"></div><div class="line">（注意，服务端对应的端口需开放给客户端才可以挂载，可使用telnet IPAddress port(端口如111)测试）</div></pre></td></tr></table></figure>
+<p>在你的 NFS 服务器设定妥当之后，我们可以在 server 端先自我测试一下是否可以联机，利用 showmount 这个指令来查阅！</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@bingo lys]<span class="comment"># showmount -e localhost</span></div><div class="line">Export list <span class="keyword">for</span> localhost:</div><div class="line">/opt/files/lys 192.168.214.0/24</div><div class="line">/opt/web/xxx   192.168.214.*</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">选项与参数：</div><div class="line"><span class="_">-a</span> ：显示目前主机与客户端的 NFS 联机分享的状态；</div><div class="line"><span class="_">-e</span> ：显示某部主机的 /etc/exports 所分享的目录数据。</div></pre></td></tr></table></figure>
+<h2 id="六、客户端配置"><a href="#六、客户端配置" class="headerlink" title="六、客户端配置"></a>六、客户端配置</h2><h4 id="1-安装nfs-utils客户端"><a href="#1-安装nfs-utils客户端" class="headerlink" title="1.安装nfs-utils客户端"></a>1.安装nfs-utils客户端</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@bingo ~]<span class="comment"># yum -y install nfs-utils</span></div><div class="line">.</div><div class="line">.</div><div class="line">. </div><div class="line"></div><div class="line">完毕！</div></pre></td></tr></table></figure>
+<h4 id="2-创建挂载目录"><a href="#2-创建挂载目录" class="headerlink" title="2.创建挂载目录"></a>2.创建挂载目录</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root@bingo ~]<span class="comment"># mkdir -p /opt/web/public</span></div></pre></td></tr></table></figure>
+<h4 id="3-查看服务器抛出的共享目录信息"><a href="#3-查看服务器抛出的共享目录信息" class="headerlink" title="3.查看服务器抛出的共享目录信息"></a>3.查看服务器抛出的共享目录信息</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@bingo ~]<span class="comment"># showmount -e 192.168.214.71</span></div><div class="line">Export list <span class="keyword">for</span> 192.168.214.71:</div><div class="line">/opt/files/lys 192.168.214.0/24</div><div class="line">/opt/web/xxx   192.168.214.*</div></pre></td></tr></table></figure>
+<h4 id="4-挂载目录"><a href="#4-挂载目录" class="headerlink" title="4.挂载目录"></a>4.挂载目录</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">一、普通挂载</div><div class="line"></div><div class="line">[root@bingo ~]<span class="comment"># mount 192.168.214.71:/opt/files/lys /opt/web/public</span></div><div class="line"></div><div class="line">二、使用TCP协议挂载（NFS默认用UDP协议，TCP协议可提高NFS的稳定性）</div><div class="line"></div><div class="line">[root@bingo ~]<span class="comment"># mount -t nfs 192.168.214.71:/opt/files/lys /opt/web/public -o proto=tcp -o nolock</span></div><div class="line"></div><div class="line">挂载遵循（from to）前者为来源，后者为目标</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">常见的参数则有：</div><div class="line"></div><div class="line">参数值    内容说明</div><div class="line">rw　ro    该目录分享的权限是可擦写 (<span class="built_in">read</span>-write) 或只读 (<span class="built_in">read</span>-only)，但最终能不能读写，还是与文件系统的 rwx 及身份有关。</div><div class="line"></div><div class="line">sync　async    sync代表数据会同步写入到内存与硬盘中，async 则代表数据会先暂存于内存当中，而非直接写入硬盘！</div><div class="line"></div><div class="line">no_root_squash　root_squash    客户端使用 NFS 文件系统的账号若为 root 时，系统该如何判断这个账号的身份？预设的情况下，</div><div class="line">客户端 root 的身份会由 root_squash 的设定压缩成 nfsnobody， 如此对服务器的系统会较有保障。但如果你想要开放客户端使用 </div><div class="line">root 身份来操作服务器的文件系统，那么这里就得要开 no_root_squash 才行！</div><div class="line"></div><div class="line">all_squash    不论登入 NFS 的使用者身份为何， 他的身份都会被压缩成为匿名用户，通常也就是 nobody(nfsnobody) </div><div class="line"></div><div class="line">anonuid　　anongid    anon 意指 anonymous (匿名者) 前面关于 *_squash 提到的匿名用户的 UID 设定值，通常为 nobody</div><div class="line">(nfsnobody)，但是你可以自行设定这个 UID 的值！当然，这个 UID 必需要存在于你的 /etc/passwd 当中！ anonuid 指的是 </div><div class="line">UID 而 anongid 则是群组的 GID 。</div></pre></td></tr></table></figure>
+<h4 id="3-配置生效-1"><a href="#3-配置生效-1" class="headerlink" title="3.配置生效"></a>3.配置生效</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root@bingo lys]<span class="comment"># exportfs -r</span></div></pre></td></tr></table></figure>
+<h2 id="七、测试结果"><a href="#七、测试结果" class="headerlink" title="七、测试结果"></a>七、测试结果</h2><h4 id="1-查看挂载结果"><a href="#1-查看挂载结果" class="headerlink" title="1.查看挂载结果"></a>1.查看挂载结果</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@bingo ~]<span class="comment"># df -h</span></div><div class="line">Filesystem            Size  Used Avail Use% Mounted on</div><div class="line">/dev/xxx</div><div class="line">                       18G  1.1G   16G   7% /</div><div class="line">tmpfs                 112M     0  112M   0% /dev/shm</div><div class="line">/dev/sda1             477M   54M  398M  12% /boot</div><div class="line">192.168.214.71:/opt/files/lys</div><div class="line">                       180G  1.1G   16G   0.7% /opt/web/public</div></pre></td></tr></table></figure>
+<h4 id="2-服务端"><a href="#2-服务端" class="headerlink" title="2.服务端"></a>2.服务端</h4><p>创建test.txt并往文件中写入内容test<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root@bingo lys]<span class="comment"># echo "test" &gt; test.txt</span></div></pre></td></tr></table></figure></p>
+<h4 id="3-客户端"><a href="#3-客户端" class="headerlink" title="3.客户端"></a>3.客户端</h4><p>查看test.txt文件内容并写入内容1024</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@bingo ~]<span class="comment"># cat /opt/web/public/test.txt </span></div><div class="line"><span class="built_in">test</span></div><div class="line">[root@bingo ~]<span class="comment"># echo "1024" &gt;&gt; /opt/web/public/test.txt</span></div></pre></td></tr></table></figure>
+<h4 id="4-服务端"><a href="#4-服务端" class="headerlink" title="4.服务端"></a>4.服务端</h4><p>查看test.txt文件内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@bingo lys]<span class="comment"># cat /opt/files/lys/test.txt </span></div><div class="line"><span class="built_in">test</span></div><div class="line">1024</div></pre></td></tr></table></figure>
+<h2 id="八、卸载已挂在的NFS"><a href="#八、卸载已挂在的NFS" class="headerlink" title="八、卸载已挂在的NFS"></a>八、卸载已挂在的NFS</h2><h4 id="1-查看挂载结果-1"><a href="#1-查看挂载结果-1" class="headerlink" title="1.查看挂载结果"></a>1.查看挂载结果</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@bingo ~]<span class="comment"># umount /opt/web/public</span></div><div class="line">[root@bingo ~]<span class="comment"># df -h</span></div><div class="line">Filesystem            Size  Used Avail Use% Mounted on</div><div class="line">/dev/xxx</div><div class="line">                       18G  1.1G   16G   7% /</div><div class="line">tmpfs                 112M     0  112M   0% /dev/shm</div><div class="line">/dev/sda1             477M   54M  398M  12% /boot</div></pre></td></tr></table></figure>
+<h2 id="九、防火墙"><a href="#九、防火墙" class="headerlink" title="九、防火墙"></a>九、防火墙</h2><h4 id="1-查看挂载结果-2"><a href="#1-查看挂载结果-2" class="headerlink" title="1.查看挂载结果"></a>1.查看挂载结果</h4><p>为了方便配置防火墙，需要固定nfs服务端口</p>
+<p>NFS启动时会随机启动多个端口并向RPC注册，这样如果使用firewalls对NFS端口进行限制就会有点麻烦，可以更改配置文件固定NFS服务相关端口。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[root@bingo lys]<span class="comment"># rpcinfo -p localhost</span></div><div class="line">   program vers proto   port  service</div><div class="line">    100000    4   tcp    111  portmapper</div><div class="line">    100000    3   tcp    111  portmapper</div><div class="line">    100000    2   tcp    111  portmapper</div><div class="line">    100000    4   udp    111  portmapper</div><div class="line">    100000    3   udp    111  portmapper</div><div class="line">    100000    2   udp    111  portmapper</div><div class="line">    100005    1   udp  49979  mountd</div><div class="line">. </div><div class="line">.</div></pre></td></tr></table></figure>
+<p>分配端口，编辑配置文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root@bingo lys]<span class="comment"># vim /etc/sysconfig/nfs</span></div></pre></td></tr></table></figure>
+<p>添加：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">RQUOTAD_PORT=30001</div><div class="line">LOCKD_TCPPORT=30002</div><div class="line">LOCKD_UDPPORT=30002</div><div class="line">MOUNTD_PORT=30003</div><div class="line">STATD_PORT=30004</div></pre></td></tr></table></figure>
+<p>重启：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@bingo lys]<span class="comment"># service nfs restart</span></div><div class="line">关闭 NFS 守护进程：                                        [确定]</div><div class="line">关闭 NFS mountd：                                          [确定]</div><div class="line">关闭 NFS 服务：                                            [确定]</div><div class="line">Shutting down RPC idmapd:                                  [确定]</div><div class="line">启动 NFS 服务：                                            [确定]</div><div class="line">启动 NFS mountd：                                          [确定]</div><div class="line">启动 NFS 守护进程：                                        [确定]</div><div class="line">正在启动 RPC idmapd：                                      [确定]</div></pre></td></tr></table></figure>
+<p>查看结果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[root@bingo lys]<span class="comment"># rpcinfo -p localhost</span></div><div class="line">   program vers proto   port  service</div><div class="line">    100000    4   tcp    111  portmapper</div><div class="line">    100000    3   tcp    111  portmapper</div><div class="line">    100000    2   tcp    111  portmapper</div><div class="line">    100000    4   udp    111  portmapper</div><div class="line">    100000    3   udp    111  portmapper</div><div class="line">    100000    2   udp    111  portmapper</div><div class="line">    100005    1   udp  30003  mountd</div><div class="line">    100005    1   tcp  30003  mountd</div><div class="line">    100005    2   udp  30003  mountd</div><div class="line">    100005    2   tcp  30003  mountd</div><div class="line">    100005    3   udp  30003  mountd</div></pre></td></tr></table></figure>
+<p>可以看到，随机端口以固定</p>
+<p>firewalls策略问题完美解决！！！</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/13/miniprogram/html/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -937,7 +1128,7 @@
       
         
           
-            <h3 id="一、通过ip获取地理位置信息"><a href="#一、通过ip获取地理位置信息" class="headerlink" title="一、通过ip获取地理位置信息"></a>一、通过ip获取地理位置信息</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">淘宝接口 -- http://ip.taobao.com/service/getIpInfo.php?ip=<span class="variable">$ip</span></div><div class="line"></div><div class="line">新浪接口 -- http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&amp;ip=<span class="variable">$ip</span> (已无法访问)</div><div class="line"></div><div class="line">qq接口   -- http://ip.qq.com/cgi-bin/searchip?searchip1=<span class="variable">$ip</span></div><div class="line"></div><div class="line">php如何获取ip地址，见下一篇文章《php如何获取ip地址》</div></pre></td></tr></table></figure>
+            <h3 id="一、通过ip获取地理位置信息"><a href="#一、通过ip获取地理位置信息" class="headerlink" title="一、通过ip获取地理位置信息"></a>一、通过ip获取地理位置信息</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">淘宝接口 -- http://ip.taobao.com/service/getIpInfo.php?ip=<span class="variable">$ip</span>  (8-17已无法访问)</div><div class="line"></div><div class="line">新浪接口 -- http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&amp;ip=<span class="variable">$ip</span>  (已无法访问)</div><div class="line"></div><div class="line">qq接口   -- http://ip.qq.com/cgi-bin/searchip?searchip1=<span class="variable">$ip</span>  (已无法访问)</div><div class="line"></div><div class="line">百度地图ip定位 -- https://api.map.baidu.com/location/ip?ak=yourkey&amp;ip=<span class="string">'.$ip  每天调用上限100w</span></div><div class="line"></div><div class="line">高德地图ip定位 -- https://restapi.amap.com/v3/ip?parameters （详细文档：https://lbs.amap.com/api/webservice/guide/api/ipconfig/） 每天调用上限10w</div><div class="line"></div><div class="line">收费接口  --  ip138.cn</div><div class="line"></div><div class="line">php如何获取ip地址，见下一篇文章《php如何获取ip地址》</div></pre></td></tr></table></figure>
 <h3 id="二、通过经纬度获取地理位置信息"><a href="#二、通过经纬度获取地理位置信息" class="headerlink" title="二、通过经纬度获取地理位置信息"></a>二、通过经纬度获取地理位置信息</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">1、google -- http://maps.google.cn/maps/api/geocode/json?latlng=22.6545715201,108.4130859375&amp;sensor=<span class="literal">true</span></div><div class="line"></div><div class="line">2、baidu  -- http://api.map.baidu.com/geocoder?output=json&amp;location=39.913542,116.379763&amp;ak=esNPFDwwsXWtsQfw4NMNmur1</div><div class="line"></div><div class="line">3、微信小程序版百度 -- http://lbsyun.baidu.com/index.php?title=wxjsapi/guide/getlocation</div></pre></td></tr></table></figure>
 <h3 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">一、获取地理位置信息有时耗时比较大，最好不要用在主进程，如果时效性要求不高，建议异步获取。</div><div class="line"></div><div class="line">二、这些接口并不稳定，指不定什么时候就不能访问了，建议规划好备用方案</div></pre></td></tr></table></figure>
 
@@ -1567,151 +1758,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/06/php/queue/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sir051223">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Forest">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/11/06/php/queue/" itemprop="url">使用redis实现呼叫中心消息队列</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-06T17:08:37+08:00">
-                2017-11-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Php/" itemprop="url" rel="index">
-                    <span itemprop="name">Php</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="一、业务需求背景"><a href="#一、业务需求背景" class="headerlink" title="一、业务需求背景"></a>一、业务需求背景</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">一个房产项目有多个团队跟进，一个团队有多个销售。</div><div class="line"></div><div class="line">当有客户进入的时候，程序自动分配由哪个团队中的哪个销售跟进次客户</div><div class="line"></div><div class="line">团队在项目中可以设置不同的分配权重</div><div class="line"></div><div class="line">销售在团队中可以设置不同的分配权重</div></pre></td></tr></table></figure>
-<h3 id="二、队列生成机制"><a href="#二、队列生成机制" class="headerlink" title="二、队列生成机制"></a>二、队列生成机制</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">建立数据库表</div><div class="line"></div><div class="line">1、项目表 -- 项目信息管理</div><div class="line"></div><div class="line">2、团队表 -- 团队信息管理</div><div class="line"></div><div class="line">3、销售表 -- 销售信息管理</div><div class="line"></div><div class="line">4、团队销售表 -- 团队销售关联关系表</div><div class="line"></div><div class="line">5、项目团队表 -- 项目团队关联关系表</div><div class="line"></div><div class="line">6、项目销售表 -- 项目销售关联关系表</div><div class="line"></div><div class="line">项目关联团队时，生成项目团队队列。命名projectTeam_&#123;<span class="variable">$pid</span>&#125;，</div><div class="line"></div><div class="line">项目关联指定团队的销售时，生成项目团队队列。命名projectSeller_&#123;<span class="variable">$teamId</span>&#125;_&#123;<span class="variable">$pid</span>&#125;</div><div class="line"></div><div class="line">使用redis的list数据类型，lpush存储队列数据</div><div class="line"></div><div class="line">A权重为1，B权重为2，C权重为2。生成队列内容则为[A,B,B,C,C];</div></pre></td></tr></table></figure>
-<h3 id="三、消费队列机制"><a href="#三、消费队列机制" class="headerlink" title="三、消费队列机制"></a>三、消费队列机制</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">当客户来访时，调用分配程序，首先找到当前分配序列的团队（右进左出规则）projectTeam_&#123;<span class="variable">$pid</span>&#125;，使用redis的LPOP key ，</div><div class="line"></div><div class="line">移出并获取列表的第一个元素，尔后使用RPUSH key value1 在列表最后添加刚刚移出的元素</div><div class="line"></div><div class="line">找到当前序列团队后，找当前序列团队的序列销售projectSeller_&#123;<span class="variable">$teamId</span>&#125;_&#123;<span class="variable">$pid</span>&#125;，同样使用redis的LPOP key ，</div><div class="line"></div><div class="line">移出并获取列表的第一个元素，尔后使用RPUSH key value1 在列表最后添加刚刚移出的元素</div><div class="line"></div><div class="line">消费消息队列业务结束</div></pre></td></tr></table></figure>
-<h3 id="四、队列状态查询以及队列消费日志监控"><a href="#四、队列状态查询以及队列消费日志监控" class="headerlink" title="四、队列状态查询以及队列消费日志监控"></a>四、队列状态查询以及队列消费日志监控</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">在linux下查看redis数据，可以使用phpRedisAdmin，但是监控消息记录，则需要自行添加日志表，结合自身业务，记录程序执行日志</div><div class="line"></div><div class="line">-- 消费队列程序流程日志表</div><div class="line"></div><div class="line">-- 生成队列程序日志表</div><div class="line"></div><div class="line">-- 当前消息队列 phpRedisAdmin</div></pre></td></tr></table></figure>
-<h3 id="五、MySQL和Redis-数据同步"><a href="#五、MySQL和Redis-数据同步" class="headerlink" title="五、MySQL和Redis 数据同步"></a>五、MySQL和Redis 数据同步</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">由于redis数据存在内存中，虽然缓存数据可以持久化，没有缓存时间限制。但是万一断电关机，数据将很难恢复，以此需要将redis中的数据实时备份，网上百度，可以得到很多方案</div><div class="line"></div><div class="line">由于数据量不大，更新不频繁的数据，所以我们采取</div><div class="line"></div><div class="line">方案一</div><div class="line"></div><div class="line">读: 读redis-&gt;没有，读mysql-&gt;把mysql数据写回redis</div><div class="line"></div><div class="line">写: 写mysql-&gt;成功，写redis</div><div class="line"></div><div class="line">就是读的话，先读Redis,Redis没有再读数据库，将数据库中的数据放入Redis</div><div class="line"></div><div class="line">写（增删改），先写数据库，然后写Redis</div><div class="line"></div><div class="line">方案二</div><div class="line"></div><div class="line">使用linux的定时任务crontab，每分钟执行一次同步脚本</div></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1762,7 +1808,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

@@ -263,6 +263,151 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/06/php/queue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/11/06/php/queue/" itemprop="url">使用redis实现呼叫中心消息队列</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-06T17:08:37+08:00">
+                2017-11-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Php/" itemprop="url" rel="index">
+                    <span itemprop="name">Php</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="一、业务需求背景"><a href="#一、业务需求背景" class="headerlink" title="一、业务需求背景"></a>一、业务需求背景</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">一个房产项目有多个团队跟进，一个团队有多个销售。</div><div class="line"></div><div class="line">当有客户进入的时候，程序自动分配由哪个团队中的哪个销售跟进次客户</div><div class="line"></div><div class="line">团队在项目中可以设置不同的分配权重</div><div class="line"></div><div class="line">销售在团队中可以设置不同的分配权重</div></pre></td></tr></table></figure>
+<h3 id="二、队列生成机制"><a href="#二、队列生成机制" class="headerlink" title="二、队列生成机制"></a>二、队列生成机制</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">建立数据库表</div><div class="line"></div><div class="line">1、项目表 -- 项目信息管理</div><div class="line"></div><div class="line">2、团队表 -- 团队信息管理</div><div class="line"></div><div class="line">3、销售表 -- 销售信息管理</div><div class="line"></div><div class="line">4、团队销售表 -- 团队销售关联关系表</div><div class="line"></div><div class="line">5、项目团队表 -- 项目团队关联关系表</div><div class="line"></div><div class="line">6、项目销售表 -- 项目销售关联关系表</div><div class="line"></div><div class="line">项目关联团队时，生成项目团队队列。命名projectTeam_&#123;<span class="variable">$pid</span>&#125;，</div><div class="line"></div><div class="line">项目关联指定团队的销售时，生成项目团队队列。命名projectSeller_&#123;<span class="variable">$teamId</span>&#125;_&#123;<span class="variable">$pid</span>&#125;</div><div class="line"></div><div class="line">使用redis的list数据类型，lpush存储队列数据</div><div class="line"></div><div class="line">A权重为1，B权重为2，C权重为2。生成队列内容则为[A,B,B,C,C];</div></pre></td></tr></table></figure>
+<h3 id="三、消费队列机制"><a href="#三、消费队列机制" class="headerlink" title="三、消费队列机制"></a>三、消费队列机制</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">当客户来访时，调用分配程序，首先找到当前分配序列的团队（右进左出规则）projectTeam_&#123;<span class="variable">$pid</span>&#125;，使用redis的LPOP key ，</div><div class="line"></div><div class="line">移出并获取列表的第一个元素，尔后使用RPUSH key value1 在列表最后添加刚刚移出的元素</div><div class="line"></div><div class="line">找到当前序列团队后，找当前序列团队的序列销售projectSeller_&#123;<span class="variable">$teamId</span>&#125;_&#123;<span class="variable">$pid</span>&#125;，同样使用redis的LPOP key ，</div><div class="line"></div><div class="line">移出并获取列表的第一个元素，尔后使用RPUSH key value1 在列表最后添加刚刚移出的元素</div><div class="line"></div><div class="line">消费消息队列业务结束</div></pre></td></tr></table></figure>
+<h3 id="四、队列状态查询以及队列消费日志监控"><a href="#四、队列状态查询以及队列消费日志监控" class="headerlink" title="四、队列状态查询以及队列消费日志监控"></a>四、队列状态查询以及队列消费日志监控</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">在linux下查看redis数据，可以使用phpRedisAdmin，但是监控消息记录，则需要自行添加日志表，结合自身业务，记录程序执行日志</div><div class="line"></div><div class="line">-- 消费队列程序流程日志表</div><div class="line"></div><div class="line">-- 生成队列程序日志表</div><div class="line"></div><div class="line">-- 当前消息队列 phpRedisAdmin</div></pre></td></tr></table></figure>
+<h3 id="五、MySQL和Redis-数据同步"><a href="#五、MySQL和Redis-数据同步" class="headerlink" title="五、MySQL和Redis 数据同步"></a>五、MySQL和Redis 数据同步</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">由于redis数据存在内存中，虽然缓存数据可以持久化，没有缓存时间限制。但是万一断电关机，数据将很难恢复，以此需要将redis中的数据实时备份，网上百度，可以得到很多方案</div><div class="line"></div><div class="line">由于数据量不大，更新不频繁的数据，所以我们采取</div><div class="line"></div><div class="line">方案一</div><div class="line"></div><div class="line">读: 读redis-&gt;没有，读mysql-&gt;把mysql数据写回redis</div><div class="line"></div><div class="line">写: 写mysql-&gt;成功，写redis</div><div class="line"></div><div class="line">就是读的话，先读Redis,Redis没有再读数据库，将数据库中的数据放入Redis</div><div class="line"></div><div class="line">写（增删改），先写数据库，然后写Redis</div><div class="line"></div><div class="line">方案二</div><div class="line"></div><div class="line">使用linux的定时任务crontab，每分钟执行一次同步脚本</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/28/php/alisms/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1440,7 +1585,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
