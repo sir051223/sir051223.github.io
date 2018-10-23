@@ -263,6 +263,454 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/21/php/soap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/21/php/soap/" itemprop="url">php通过SoapClient调用webservice接口以及注意项</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-21T17:11:37+08:00">
+                2018-06-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Php/" itemprop="url" rel="index">
+                    <span itemprop="name">Php</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="一、安装soap扩展"><a href="#一、安装soap扩展" class="headerlink" title="一、安装soap扩展"></a>一、安装soap扩展</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">1、Linux下安装soap模块</div><div class="line">   </div><div class="line">   查看soap模块是否安装的办法：在php的安装目录下运行php -m来查看</div><div class="line">   <span class="variable">$phppath</span>/bin/php -m | grep soap</div><div class="line"></div><div class="line">   如果没有安装，则进入php的安装源文件夹</div><div class="line">   <span class="built_in">cd</span> php-<span class="variable">$version</span>/ext/soap</div><div class="line">   // 进入文件夹后执行</div><div class="line">   <span class="variable">$phppath</span>/bin/phpize    </div><div class="line"></div><div class="line">   然后安装编译</div><div class="line">   make &amp; make install </div><div class="line"></div><div class="line">   安装好之后会提示soap.so文件的保存路径</div><div class="line"></div><div class="line">   接着修改php.ini文件</div><div class="line">   ;extension=soap.so</div><div class="line">   去掉前面的;</div><div class="line"></div><div class="line">   重启apache或者php-fpm</div><div class="line">   service httpd restart 或者 /etc/init.d/php-fpm restart</div></pre></td></tr></table></figure>
+<h3 id="二、客户端调用示例代码"><a href="#二、客户端调用示例代码" class="headerlink" title="二、客户端调用示例代码"></a>二、客户端调用示例代码</h3><p>1、无SoapHeader认证的情况</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">   try&#123;</div><div class="line">    <span class="variable">$client</span> = new SoapClient(<span class="string">'http://www.whatever.com/WebService.asmx?wsdl'</span>);</div><div class="line">    <span class="variable">$result</span> = <span class="variable">$client</span>-&gt;toDo(<span class="variable">$paramArr</span>);</div><div class="line">    <span class="variable">$result</span> = simplexml_load_string(<span class="variable">$result</span>-&gt;toDoResult);</div><div class="line">    <span class="variable">$state</span> = <span class="variable">$result</span>-&gt;smsstate;</div><div class="line">&#125;catch (SoapFault <span class="variable">$fault</span>)&#123;&#125;</div><div class="line"><span class="built_in">echo</span> <span class="variable">$state</span>;</div></pre></td></tr></table></figure>
+<p>2、有SoapHeader验证的情况</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">   <span class="variable">$soap</span> = new \SoapClient(<span class="string">'http://www.whatever.com/WebService.asmx?wsdl'</span>);</div><div class="line"></div><div class="line">/*</div><div class="line"> *SoapHeader参数说明如下所示:</div><div class="line"> *<span class="string">'http://tempuri.org/'</span>   namespace(命名空间可省略 根据服务端定)</div><div class="line"> *<span class="string">'MySoapHeader'</span>          SoapHeader头的类名</div><div class="line"> *<span class="string">'array(...)'</span>            存放标识身份的字符串参数</div><div class="line"> *<span class="string">'true'</span>                  是否必须处理该header</div><div class="line">*/</div><div class="line"></div><div class="line"><span class="variable">$head</span> = new \SoapHeader(http://tempuri.org/<span class="string">', '</span>MySoapHeader<span class="string">', array('</span>uname<span class="string">'=&gt;'</span>admin<span class="string">','</span><span class="built_in">pwd</span><span class="string">'=&gt;'</span>123456<span class="string">'), true);</span></div><div class="line"></div><div class="line">//添加soapheader</div><div class="line">$soap-&gt;__setSoapHeaders($head);</div><div class="line"></div><div class="line">//调取需要的webservice方法</div><div class="line">$res = $s-&gt;toDo(array('param<span class="string">'=&gt;'</span>val<span class="string">'));</span></div><div class="line"></div><div class="line">echo $res-&gt;toDoResult;</div></pre></td></tr></table></figure>
+<h3 id="三、参数值传输接收不到的情况"><a href="#三、参数值传输接收不到的情况" class="headerlink" title="三、参数值传输接收不到的情况"></a>三、参数值传输接收不到的情况</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">第一次传递的参数，在服务端接收参数正常，修改参数名后，给参数赋值，在服务端出现接收不到参数值的现象</div><div class="line"></div><div class="line">调试1：安装soapui，发起调用 -&gt; 调用正常  判断：排除服务器端问题</div><div class="line"></div><div class="line">调试2：将参数值修改为固定字符串值，再发起调用 -&gt; 依然接收不到 判断：排除参数赋值失效</div><div class="line"></div><div class="line">调试3：改变参数位置，再发起调用 -&gt; 依然接收不到  判断：排除参数位置影响</div><div class="line"></div><div class="line">调试4：删除runtime缓存文件，再发起调用 -&gt; 依然接收不到  判断：排除程序缓存文件影响</div><div class="line"></div><div class="line">调试5：重启apache或php-fpm，再发起调用 -&gt; 依然接收不到  判断：排除web服务器环境问题</div><div class="line"></div><div class="line">调试6：本地wamp环境，发起调用 -&gt; 接收正常  判断：soap环境差异问题导致，查找到是soap缓存的问题</div><div class="line"></div><div class="line">修改代码</div><div class="line"></div><div class="line"><span class="variable">$soap</span> = new \SoapClient(<span class="string">'http://www.whatever.com/WebService.asmx?wsdl'</span>);</div><div class="line"></div><div class="line">为</div><div class="line"></div><div class="line"><span class="variable">$soap</span> = new \SoapClient(<span class="string">'http://www.whatever.com/WebService.asmx?wsdl'</span>, array(<span class="string">'cache_wsdl'</span> =&gt; 0));</div><div class="line"></div><div class="line">发起调用 -&gt; 接收正常</div></pre></td></tr></table></figure>
+<h3 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">参数名接收到，但参数值接收不到，这很怪异，一开始没有怀疑缓存原因，归根到底是对soap的基础理解得不够深刻。使用排除法定位问题的</div><div class="line">速度还是比较局限。透过现象去了解程序的本质，设计思想，对于分析、解决问题有很大的帮助</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/13/essay/mother/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/13/essay/mother/" itemprop="url">母亲</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-13T09:59:36+08:00">
+                2018-06-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/随笔/" itemprop="url" rel="index">
+                    <span itemprop="name">随笔</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="在路上"><a href="#在路上" class="headerlink" title="在路上"></a>在路上</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6月6日早上父亲的一通电话，平静的生活像打翻了调味瓶，震惊、慌乱、悲伤、惋惜、愤怒、不甘，一系列的情绪变化。<br>父亲的电话告知母亲确诊患宫颈癌，整个人都不好了，先去百度相关知识，不幸中的万幸宫颈癌还可以治。然后问朋友同学，景爷、阿东、震哥、韦大哥推荐的朱医生、妇幼的腾医生，感谢这些好心人的帮助。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6月8日下午，和哥哥约好一起回家，下雨天气视野不好，不坐同一辆车，广州大雨堵城，汽车出广州城区花了4个小时，回到岑溪已经9点，在岑溪住一晚，明早等爸妈后一起去梧州。9号早上到梧州工人医院，将近12点轮到，得知工人医院没有放疗、化疗设备，桂东也是。建议去红会，去到红会12点多，红会已经进入下班时间。打电话给村里同患人介绍的医生，问能不能住院，她说周末不上班，顿时心里拔凉，感觉医院条件不好。6月11日再到红会，找到介绍的医生，在放疗科，医生说现在没有床位，要我们现在外面住，边做检查边等。幸亏当时没有答应，放疗的环境太差，人也不好。去挂门诊看，门诊说红会只有开刀，没有微创，建议去南宁、广州。如果决定在红会做，需要先做检查，然后预约床位，不一定什么时候有，在门诊做的检查不能报销医保（这就是社会）。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;母亲怕痛，上世纪80年代的计划生育，妈妈被迫人流，没有麻醉，做完手术后坐单车走几十公里山里回家，一路上颠簸和疼痛是她的噩梦。中午吃饭的时候讨论去哪治疗，广州南宁的花费一期承担得起，但现在房子压力以及后期化疗费用却承担不了，离家更近，综合考虑还是选择在红会。去网上查了资料，看了江布英医生的履历和论文事迹，想要请她帮忙，于是从下午1点20开始在13楼等她，她今天在上手术，不知道什么时候能下手术，但是确信一定能等到她。到下午4点多，终于等到她，没有寒暄，直入主题，最终还是收了入院，感谢江医生。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;入院前的检查需要量体温、量血压，因为刚刚从13楼走下1楼，第一次测量的血压有点高，护士让我们到旁边休息10分钟后，再过来测。休息期间，我感觉到母亲脚在颤动，她在担心焦虑，她害怕痛，她已经好几个晚上没有休息好了。看到她这个样子，我心里很不是滋味，愤怒过，问老天爷为什么要让如此善良的人患病，一辈子问心无愧如她，却患此病。不甘过，想去更好条件的医院，南宁、广州，低头看看自己，是如此的不自量力，给不了最好的，选择最合适的。母亲很年轻，在18岁的时候就生下了我，她这么年轻患病，惋惜，然而却无能为力。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;泰戈尔说，“你的负担将变成礼物，你受的苦将照亮你的路。”,悲观的人，只会让自己深陷于苦难的泥潭；乐观的人，会为自己照亮走出黑暗的方向。希望母亲快快好起来。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这段期间，家里天空似乎有一朵乌云笼罩，压得喘不过气来，无能为力、焦虑、等待、语言上的无助让我难受。现在回到公司工作，睡觉偶然惊醒，梦里全是母亲的事情，想来首先想到的是这个事实，有些压抑。看《滚蛋吧，肿瘤君》，希望能学到一些道理和鸡汤帮助和宽慰妈妈，也宽慰自己。让自己不要过于担心，直面自己和生活。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;做最坏的准备，想最好的事情。感觉亏欠家里太多，儿子太自私，有些愧疚。想母亲康复后，带她去哪里玩，带她看看外面的世界，这也是我目前最想做的事情。愿顺</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/28/linux/redis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/28/linux/redis/" itemprop="url">redis安全设置</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-28T17:08:58+08:00">
+                2018-05-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>Redis的安全设计是在”Redis运行在可信环境”这个前提下做出的，在生产环境运行时不能允许外界直接连接到Redis服务器上，而应该通过应用程序进行中转，运行在可信的环境中是保证Redis安全的最重要方法。</p>
+<p>在洞悉漏洞官网中，有一个漏洞叫“Redis 未授权访问缺陷可轻易导致系统被黑”，链接<a href="https://www.seebug.org/vuldb/ssvid-89715。可见redis安全的重要性" target="_blank" rel="external">https://www.seebug.org/vuldb/ssvid-89715。可见redis安全的重要性</a></p>
+<h3 id="1-为redis设置密码"><a href="#1-为redis设置密码" class="headerlink" title="1.为redis设置密码"></a>1.为redis设置密码</h3><p>在redis.conf中进行配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">requirepass redispwd  <span class="comment"># redispwd即为redis的启动密码,在设置时，一定要选择复杂性高的密码</span></div></pre></td></tr></table></figure>
+<h3 id="2-危险命令重命名或禁用"><a href="#2-危险命令重命名或禁用" class="headerlink" title="2.危险命令重命名或禁用"></a>2.危险命令重命名或禁用</h3><p>在redis.conf中进行配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">rename-command CONFIG rename_config   <span class="comment"># 重命名CONFIG命令  </span></div><div class="line">rename-command SAVE <span class="string">""</span>  <span class="comment"># 禁用SAVE命令</span></div></pre></td></tr></table></figure>
+<h3 id="3-配置bind选项-限定可以连接Redis服务器的IP"><a href="#3-配置bind选项-限定可以连接Redis服务器的IP" class="headerlink" title="3.配置bind选项, 限定可以连接Redis服务器的IP"></a>3.配置bind选项, 限定可以连接Redis服务器的IP</h3><p>在redis.conf中进行配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">bind</span> 127.0.0.1  <span class="comment"># 限定只能本地访问</span></div></pre></td></tr></table></figure>
+<h3 id="4-使用低权限用户启动redis"><a href="#4-使用低权限用户启动redis" class="headerlink" title="4.使用低权限用户启动redis"></a>4.使用低权限用户启动redis</h3><p>先停止redis，然后切换至低权限用户身份，su lowuser，执行启动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/path/redis/bin/redis-server /path/redis/etc/redis.conf</div></pre></td></tr></table></figure>
+<p>会出现 cannot create: Permission denied 报错，解决办法为赋予权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chown -R lowgroup.lowuser /path/redis</div></pre></td></tr></table></figure>
+<h3 id="5-修改redis默认端口号"><a href="#5-修改redis默认端口号" class="headerlink" title="5.修改redis默认端口号"></a>5.修改redis默认端口号</h3><p>redis默认端口号为6379，在redis.conf配置文件修改为其它端口号</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">port 63791</div></pre></td></tr></table></figure>
+<p>如果是云服务器，可以要在云服务器管理后台开启关闭对应redis的出网端口</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/06/php/queue/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -983,151 +1431,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/16/linux/mirrors/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sir051223">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Forest">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/16/linux/mirrors/" itemprop="url">mirrors镜像资源</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-16T12:33:31+08:00">
-                2017-08-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="国内部分开源镜像站点汇总"><a href="#国内部分开源镜像站点汇总" class="headerlink" title="国内部分开源镜像站点汇总"></a>国内部分开源镜像站点汇总</h2><h3 id="网易开源镜像资源"><a href="#网易开源镜像资源" class="headerlink" title="网易开源镜像资源"></a>网易开源镜像资源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.163.com/</div></pre></td></tr></table></figure>
-<h3 id="搜狐开源镜像资源"><a href="#搜狐开源镜像资源" class="headerlink" title="搜狐开源镜像资源"></a>搜狐开源镜像资源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.sohu.com/</div></pre></td></tr></table></figure>
-<h3 id="清华大学开源镜像资源"><a href="#清华大学开源镜像资源" class="headerlink" title="清华大学开源镜像资源"></a>清华大学开源镜像资源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.cnnic.cn</div></pre></td></tr></table></figure>
-<h3 id="科大开源镜像资源"><a href="#科大开源镜像资源" class="headerlink" title="科大开源镜像资源"></a>科大开源镜像资源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.ustc.edu.cn/</div></pre></td></tr></table></figure>
-<h3 id="阿里云开源镜像资源"><a href="#阿里云开源镜像资源" class="headerlink" title="阿里云开源镜像资源"></a>阿里云开源镜像资源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.aliyun.com/</div></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/16/linux/collect/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1273,7 +1576,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/31/管理后台使用文档/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/16/linux/mirrors/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sir051223">
@@ -1292,7 +1595,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/10/31/管理后台使用文档/" itemprop="url">angular管理后台使用文档</a></h1>
+                <a class="post-title-link" href="/2017/08/16/linux/mirrors/" itemprop="url">mirrors镜像资源</a></h1>
         
 
         <div class="post-meta">
@@ -1304,137 +1607,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-31T11:39:39+08:00">
-                2016-10-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>为了提高代码可读性、重写扩展性，后台管理系统使用了ng1.x（angular1.x），因此这里写一个简单的开发文档，方便了解项目结构以及快速开发</p>
-<h2 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h2><h3 id="创建一个菜单"><a href="#创建一个菜单" class="headerlink" title="创建一个菜单"></a>创建一个菜单</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">以下以创建菜单账号管理为例</div><div class="line">添加路由规则：找到admin目录下的rount.js里添加</div><div class="line"></div><div class="line">.state(<span class="string">'app.user'</span>, &#123;</div><div class="line">  abstract: <span class="literal">true</span>,</div><div class="line">  url: <span class="string">'/user'</span>,</div><div class="line">  template: <span class="string">'&lt;div ui-view class="fade-in"&gt;&lt;/div&gt;'</span>,</div><div class="line">  resolve: &#123;</div><div class="line">      deps: [<span class="string">'$ocLazyLoad'</span>,</div><div class="line">        <span class="keyword">function</span>( <span class="variable">$ocLazyLoad</span> )&#123;</div><div class="line">          <span class="built_in">return</span> <span class="variable">$ocLazyLoad</span>.load(<span class="string">'admin/user/ctrl.js'</span>);</div><div class="line">      &#125;]</div><div class="line">  &#125;</div><div class="line">&#125;)</div><div class="line">.state(<span class="string">'app.user.list'</span>, &#123;</div><div class="line">  url: <span class="string">'/list?page&amp;search'</span>,</div><div class="line">  templateUrl: <span class="string">'admin/user/list.html'</span>,</div><div class="line">  ncyBreadcrumb: &#123;</div><div class="line">    parent:<span class="string">'app.user'</span>,</div><div class="line">    label: <span class="string">'用户列表'</span>,</div><div class="line">  &#125;</div><div class="line">&#125;)</div><div class="line">.state(<span class="string">'app.user.detail'</span>, &#123;</div><div class="line">  url: <span class="string">'/detail/&#123;id&#125;'</span>,</div><div class="line">  templateUrl: <span class="string">'admin/user/detail.html'</span>,</div><div class="line">  ncyBreadcrumb: &#123;</div><div class="line">    parent:<span class="string">'app.user.list'</span>,</div><div class="line">    label: <span class="string">'编辑'</span>,</div><div class="line">  &#125;</div><div class="line">&#125;)</div><div class="line">.state(<span class="string">'app.user.create'</span>, &#123;</div><div class="line">  url: <span class="string">'/create'</span>,</div><div class="line">  templateUrl: <span class="string">'admin/user/detail.html'</span>,</div><div class="line">  ncyBreadcrumb: &#123;</div><div class="line">    parent:<span class="string">'app.user.list'</span>,</div><div class="line">    label: <span class="string">'新增'</span>,</div><div class="line">  &#125;</div><div class="line">&#125;)</div><div class="line"></div><div class="line">页面显示菜单：打开admin/blocks下的aside.html</div><div class="line">在系统管理菜单下加入以下代码</div><div class="line">&lt;li class=<span class="string">""</span>&gt;</div><div class="line">	&lt;a ui-sref=<span class="string">"app.user.list"</span>&gt;</div><div class="line">	  &lt;i class=<span class="string">"menu-icon fa fa-caret-right"</span>&gt;&lt;/i&gt;</div><div class="line">	  账号管理</div><div class="line">	&lt;/a&gt;</div><div class="line">	&lt;b class=<span class="string">"arrow"</span>&gt;&lt;/b&gt;</div><div class="line">&lt;/li&gt;</div><div class="line">保存刷新页面即可显示账号管理</div></pre></td></tr></table></figure>
-<p>更多: [501849606@qq.com]</p>
-<h3 id="查询数据列表展示"><a href="#查询数据列表展示" class="headerlink" title="查询数据列表展示"></a>查询数据列表展示</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">参照以上创建“用户管理”路由规则中的 templateUrl: <span class="string">'admin/user/list.html'</span></div><div class="line">在admin目录下创建user文件夹 并在user里面创建 list.html模板和ctrl.js控制器</div><div class="line"></div><div class="line">list.html</div><div class="line">&lt;div class=<span class="string">"wrapper-md"</span> ng-controller=<span class="string">"ListController"</span>&gt; </div><div class="line">  html内容......</div><div class="line">  以下是循环遍历请求接口返回的数据  展示到页面  ng-repeat为遍历标签</div><div class="line">	&lt;tr ng-repeat=<span class="string">"data in data.userInfoList"</span> on-finish-render-filters&gt;</div><div class="line">	  &lt;td&gt;&#123;&#123;data.login&#125;&#125;&lt;/td&gt;</div><div class="line">	  &lt;td&gt;&#123;&#123;data.role_name&#125;&#125;&lt;/td&gt;</div><div class="line">	  &lt;td&gt;&#123;&#123;data.email&#125;&#125;&lt;/td&gt;</div><div class="line">	  &lt;td&gt;&#123;&#123;data.qq&#125;&#125;&lt;/td&gt;</div><div class="line">	  &lt;td&gt;&#123;&#123;data.ctime|date:<span class="string">'yyyy-MM-dd HH:mm:ss'</span>&#125;&#125;&lt;/td&gt;</div><div class="line">	&lt;/tr&gt;</div><div class="line">&lt;/div&gt;</div><div class="line"></div><div class="line">ctrl.js</div><div class="line"><span class="string">'use strict'</span>;</div><div class="line"></div><div class="line">app.controller(<span class="string">'ListController'</span>, <span class="keyword">function</span>(<span class="variable">$scope</span>, <span class="variable">$http</span>, <span class="variable">$resource</span>,<span class="variable">$stateParams</span>,<span class="variable">$modal</span>,<span class="variable">$state</span>) &#123;</div><div class="line">    //查询  请求获取用户数据接口获取用户列表数据</div><div class="line">    <span class="variable">$scope</span>.query = <span class="keyword">function</span>(page,filter)&#123;</div><div class="line">        //用post带上参数请求接口获取数据</div><div class="line">        <span class="variable">$http</span>.post(<span class="variable">$scope</span>.app.host + <span class="string">"userManage/getUserInfoList"</span>, &#123;usertoken: <span class="variable">$scope</span>.session_user.usertoken, authcode : <span class="string">'123456'</span>&#125;)</div><div class="line">        .then(<span class="keyword">function</span>(response) &#123;</div><div class="line">          //获得数据返回</div><div class="line">          var data = response.data;</div><div class="line">          <span class="keyword">if</span> ( data.code != 40001) &#123;</div><div class="line">            alert(data.message);</div><div class="line">          &#125; <span class="keyword">else</span> &#123;</div><div class="line">            //将返回的列表数组赋给域  提供给list.html中的ng-repeat使用</div><div class="line">            <span class="variable">$scope</span>.data = data.data;</div><div class="line">          &#125;</div><div class="line">        &#125;, <span class="keyword">function</span>(x) &#123;</div><div class="line">          <span class="variable">$scope</span>.authError = <span class="string">'服务器错误'</span>;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    //默认执行查询接口查询数据</div><div class="line">    <span class="variable">$scope</span>.query(<span class="variable">$stateParams</span>.page,<span class="variable">$stateParams</span>.search);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">ctrl.js中的ListController对应list.html中的ng-controller=<span class="string">"ListController"</span>  表示这个区域中的事件处理</div></pre></td></tr></table></figure>
-<p>更多: [501849606@qq.com]</p>
-<h3 id="新增或编辑用户"><a href="#新增或编辑用户" class="headerlink" title="新增或编辑用户"></a>新增或编辑用户</h3><h4 id="添加-新增和编辑用户页面"><a href="#添加-新增和编辑用户页面" class="headerlink" title="添加 新增和编辑用户页面"></a>添加 新增和编辑用户页面</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">在admin/user文件夹user下创建 detail.html模板</div><div class="line">控制器域  ng-controller  数据绑定ng-model</div><div class="line"></div><div class="line">&lt;div ng-controller=<span class="string">"DetailController"</span>&gt;   //ng-controller</div><div class="line">      &lt;form class=<span class="string">"form-horizontal ng-pristine ng-valid ng-valid-date ng-valid-required ng-valid-parse ng-valid-date-disabled"</span> ng-submit=<span class="string">"submit()"</span>&gt; //ng-submit</div><div class="line">        &lt;div class=<span class="string">"col-auto"</span>&gt;</div><div class="line">        &lt;div class=<span class="string">"table_full"</span>&gt;</div><div class="line">          &lt;table class=<span class="string">"table table-bordered"</span>&gt;</div><div class="line">            &lt;tbody&gt;</div><div class="line">            &lt;tr&gt;</div><div class="line">              &lt;th width=<span class="string">"130"</span>&gt;用户名 &lt;/th&gt;</div><div class="line">              &lt;td&gt;</div><div class="line">              &lt;input <span class="built_in">type</span>=<span class="string">"text"</span> style=<span class="string">"width:400px;"</span> ng-model=<span class="string">"data.login"</span> class=<span class="string">"input input_hd J_title_color"</span> placeholder=<span class="string">"请输入用户名 "</span> &gt;</div><div class="line">              &lt;/td&gt;</div><div class="line">            &lt;/tr&gt;</div><div class="line">          &lt;/tbody&gt;</div><div class="line">          &lt;/table&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">        &lt;div class=<span class="string">"form-actions"</span>&gt;</div><div class="line">          &lt;button class=<span class="string">"btn btn-primary btn_submit J_ajax_submit_btn"</span> <span class="built_in">type</span>=<span class="string">"submit"</span>&gt;提交&lt;/button&gt;</div><div class="line">          &amp;nbsp; &amp;nbsp; &amp;nbsp;</div><div class="line">          &lt;button class=<span class="string">"btn"</span> <span class="built_in">type</span>=<span class="string">"reset"</span>&gt;</div><div class="line">            &lt;i class=<span class="string">"icon-undo bigger-110"</span>&gt;&lt;/i&gt;</div><div class="line">            重置</div><div class="line">          &lt;/button&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">      &lt;/form&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure>
-<h4 id="crtl-js添加页面的业务逻辑"><a href="#crtl-js添加页面的业务逻辑" class="headerlink" title="crtl.js添加页面的业务逻辑"></a>crtl.js添加页面的业务逻辑</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line">在admin/user文件夹中的crtl.js</div><div class="line"></div><div class="line">app.controller(<span class="string">'DetailController'</span>, <span class="keyword">function</span>(<span class="variable">$rootScope</span>,<span class="variable">$scope</span>, <span class="variable">$http</span>, <span class="variable">$stateParams</span>,<span class="variable">$state</span>) &#123;</div><div class="line">  <span class="variable">$scope</span>.edit_mode = !!<span class="variable">$stateParams</span>.id;</div><div class="line">  //如果是编辑数据，获取初始化的编辑数据</div><div class="line">  <span class="keyword">if</span> (<span class="variable">$scope</span>.edit_mode) &#123;</div><div class="line">      <span class="variable">$http</span>.post(<span class="variable">$scope</span>.app.host + <span class="string">"userManage/getUserInfoById"</span>, &#123;usertoken: <span class="variable">$scope</span>.session_user.usertoken, authcode : <span class="string">'123456'</span>, id: <span class="variable">$stateParams</span>.id&#125;)</div><div class="line">      .then(<span class="keyword">function</span>(response) &#123;</div><div class="line">        var data = response.data;</div><div class="line">        <span class="keyword">if</span> ( data.code != 40001) &#123;</div><div class="line">          alert(data.message);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">          //把获取到的数据赋给域</div><div class="line">          <span class="variable">$scope</span>.data = data.data;</div><div class="line">        &#125;</div><div class="line">      &#125;, <span class="keyword">function</span>(x) &#123;</div><div class="line">        <span class="variable">$scope</span>.authError = <span class="string">'服务器错误'</span>;</div><div class="line">      &#125;);</div><div class="line">  &#125; <span class="keyword">else</span> &#123; </div><div class="line">      //添加页面把空数据赋给域 </div><div class="line">      <span class="variable">$scope</span>.data = &#123;&#125;;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  // form表单提交时的操作</div><div class="line">  <span class="variable">$scope</span>.submit = <span class="function"><span class="title">function</span></span>()&#123;</div><div class="line">    <span class="variable">$scope</span>.data.usertoken = <span class="variable">$scope</span>.session_user.usertoken;</div><div class="line">    <span class="variable">$scope</span>.data.authcode = <span class="string">'123456'</span>;</div><div class="line">    //如果是编辑时的提交</div><div class="line">    <span class="keyword">if</span>(<span class="variable">$scope</span>.edit_mode)&#123;</div><div class="line">        <span class="variable">$scope</span>.data.id = <span class="variable">$stateParams</span>.id;</div><div class="line">        <span class="variable">$http</span>.post(<span class="variable">$scope</span>.app.host + <span class="string">"userManage/editUserInfo"</span>, <span class="variable">$scope</span>.data)</div><div class="line">        .then(<span class="keyword">function</span>(response) &#123;</div><div class="line">          var data = response.data;</div><div class="line">          <span class="keyword">if</span> ( data.code != 40001) &#123;</div><div class="line">            alert(data.message);</div><div class="line">          &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="variable">$state</span>.go(<span class="string">'app.user.list'</span>);</div><div class="line">          &#125;</div><div class="line">        &#125;, <span class="keyword">function</span>(x) &#123;</div><div class="line">          <span class="variable">$scope</span>.authError = <span class="string">'服务器错误'</span>;</div><div class="line">        &#125;);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">    	//如果是新增数据的提交</div><div class="line">        <span class="variable">$scope</span>.data.phonenum = <span class="variable">$scope</span>.data.login;</div><div class="line">        <span class="variable">$http</span>.post(<span class="variable">$scope</span>.app.host + <span class="string">"auth/regist"</span>, <span class="variable">$scope</span>.data)</div><div class="line">        .then(<span class="keyword">function</span>(response) &#123;</div><div class="line">          var data = response.data;</div><div class="line">          <span class="keyword">if</span> ( data.code != 40001) &#123;</div><div class="line">            alert(data.message);</div><div class="line">          &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="variable">$state</span>.go(<span class="string">'app.user.list'</span>);</div><div class="line">          &#125;</div><div class="line">        &#125;, <span class="keyword">function</span>(x) &#123;</div><div class="line">          <span class="variable">$scope</span>.authError = <span class="string">'服务器错误'</span>;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">  &#125;;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>更多: [501849606@qq.com]</p>
-<h3 id="删除数据"><a href="#删除数据" class="headerlink" title="删除数据"></a>删除数据</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line">在列表页的循环方法中有一个删除方法 delete();</div><div class="line">&lt;a class=<span class="string">"red"</span> ng-click=<span class="string">"delete(&#123;id:data.id&#125;)"</span> title=<span class="string">"删除"</span>&gt;</div><div class="line">	&lt;i class=<span class="string">"fa fa-trash-o bigger-130"</span>&gt;&lt;/i&gt;</div><div class="line">&lt;/a&gt;</div><div class="line"></div><div class="line">crtl.js中的删除方法</div><div class="line"></div><div class="line">app.controller(<span class="string">'ListController'</span>, <span class="keyword">function</span>(<span class="variable">$scope</span>, <span class="variable">$http</span>, <span class="variable">$resource</span>,<span class="variable">$stateParams</span>,<span class="variable">$modal</span>,<span class="variable">$state</span>) &#123;</div><div class="line">    //域中的delete方法</div><div class="line">    <span class="variable">$scope</span>.delete = <span class="keyword">function</span>(did) &#123;</div><div class="line"></div><div class="line">      //弹出删除确认  弹出层</div><div class="line">      var modalInstance = <span class="variable">$modal</span>.open(&#123;</div><div class="line">          templateUrl: <span class="string">'admin/confirm.html'</span>,</div><div class="line">          controller: <span class="string">'ConfirmController'</span>,</div><div class="line">          size:<span class="string">'sm'</span>,</div><div class="line">      &#125;);</div><div class="line"></div><div class="line">      modalInstance.result.then(<span class="function"><span class="title">function</span></span> () &#123;</div><div class="line">      	//如果确认删除 拼装参数调用删除接口</div><div class="line">        <span class="variable">$http</span>.post(<span class="variable">$scope</span>.app.host + <span class="string">"userManage/deleteUserInfo"</span>, &#123;usertoken: <span class="variable">$scope</span>.session_user.usertoken, authcode : <span class="string">'123456'</span>, id: did.id&#125;)</div><div class="line">        .then(<span class="keyword">function</span>(response) &#123;</div><div class="line">          var data = response.data;</div><div class="line">          <span class="keyword">if</span> (data.code != 40001) &#123;</div><div class="line">            alert(data.message);</div><div class="line">          &#125; <span class="keyword">else</span> &#123;</div><div class="line">          	//删除成功后跳转到list页面</div><div class="line">            <span class="variable">$state</span>.go(<span class="string">'app.user.list'</span>);</div><div class="line">          &#125;</div><div class="line">        &#125;, <span class="keyword">function</span>(x) &#123;</div><div class="line">          <span class="variable">$scope</span>.authError = <span class="string">'服务器错误'</span>;</div><div class="line">        &#125;);            </div><div class="line">      &#125;);</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">//confirm弹层</div><div class="line">app.controller(<span class="string">'ConfirmController'</span>, [<span class="string">'$scope'</span>, <span class="string">'$modalInstance'</span>, <span class="keyword">function</span>(<span class="variable">$scope</span>, <span class="variable">$modalInstance</span>)&#123;</div><div class="line">    <span class="variable">$scope</span>.ok = <span class="function"><span class="title">function</span></span> () &#123;</div><div class="line">        <span class="variable">$modalInstance</span>.close();</div><div class="line">    &#125;;</div><div class="line">    <span class="variable">$scope</span>.cancel = <span class="function"><span class="title">function</span></span> () &#123;</div><div class="line">        <span class="variable">$modalInstance</span>.dismiss(<span class="string">'cancel'</span>);</div><div class="line">  &#125;;</div><div class="line">&#125;]);</div></pre></td></tr></table></figure>
-<p>更多: [501849606@qq.com]</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/28/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sir051223">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Forest">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/10/28/hello-world/" itemprop="url">你好，世界</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-28T11:32:05+08:00">
-                2016-10-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-16T12:33:31+08:00">
+                2017-08-16
               </time>
             
 
@@ -1456,8 +1630,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/随笔/" itemprop="url" rel="index">
-                    <span itemprop="name">随笔</span>
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
                   </a>
                 </span>
 
@@ -1495,12 +1669,11 @@
       
         
           
-            <p>你好，世界</p>
-<h3 id="风"><a href="#风" class="headerlink" title="风"></a>风</h3><p>起风了</p>
-<h3 id="和"><a href="#和" class="headerlink" title="和"></a>和</h3><p>告诉自己每天都比昨天好一点</p>
-<h3 id="日"><a href="#日" class="headerlink" title="日"></a>日</h3><p>因为我知道，逆水行舟，不进则退</p>
-<h3 id="丽"><a href="#丽" class="headerlink" title="丽"></a>丽</h3><p>不知道未来长什么样子，但是我相信未来一定是美好的</p>
-<h3 id="hexo-first-article"><a href="#hexo-first-article" class="headerlink" title="hexo first article"></a>hexo first article</h3>
+            <h2 id="国内部分开源镜像站点汇总"><a href="#国内部分开源镜像站点汇总" class="headerlink" title="国内部分开源镜像站点汇总"></a>国内部分开源镜像站点汇总</h2><h3 id="网易开源镜像资源"><a href="#网易开源镜像资源" class="headerlink" title="网易开源镜像资源"></a>网易开源镜像资源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.163.com/</div></pre></td></tr></table></figure>
+<h3 id="搜狐开源镜像资源"><a href="#搜狐开源镜像资源" class="headerlink" title="搜狐开源镜像资源"></a>搜狐开源镜像资源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.sohu.com/</div></pre></td></tr></table></figure>
+<h3 id="清华大学开源镜像资源"><a href="#清华大学开源镜像资源" class="headerlink" title="清华大学开源镜像资源"></a>清华大学开源镜像资源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.cnnic.cn</div></pre></td></tr></table></figure>
+<h3 id="科大开源镜像资源"><a href="#科大开源镜像资源" class="headerlink" title="科大开源镜像资源"></a>科大开源镜像资源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.ustc.edu.cn/</div></pre></td></tr></table></figure>
+<h3 id="阿里云开源镜像资源"><a href="#阿里云开源镜像资源" class="headerlink" title="阿里云开源镜像资源"></a>阿里云开源镜像资源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.aliyun.com/</div></pre></td></tr></table></figure>
           
         
       
@@ -1539,7 +1712,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1585,7 +1758,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">22</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

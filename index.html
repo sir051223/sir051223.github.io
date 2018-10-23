@@ -263,6 +263,517 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/23/linux/php/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/23/linux/php/" itemprop="url">centos7下源码编译安装php7.1最新版本</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-23T16:21:55+08:00">
+                2018-10-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="1-安装前准备"><a href="#1-安装前准备" class="headerlink" title="1.安装前准备"></a>1.安装前准备</h3><p>1.检查是否安装了gcc ,没有的话执行yum install gcc</p>
+<p>2.检查是否安装了libxml2 ,没有的话执行yum install libxml2</p>
+<p>3.检查是否安装了libxml2-devel,没有的话执行yum install libxml2-devel</p>
+<p>4.检查是否安装了openssl,没有的话执行yum install openssl openssl-devel</p>
+<p>5.curl安装 yum -y install curl-devel</p>
+<p>6.图片库安装 yum install libjpeg.x86_64 libpng.x86_64 freetype.x86_64 libjpeg-devel.x86_64 libpng-devel.x86_64 freetype-devel.x86_64 -y</p>
+<p>7.图片库安装 yum install libjpeg-devel</p>
+<p>8.解压软件安装 yum install bzip2-devel.x86_64 -y</p>
+<p>9.yum install libXpm-devel  10.yum install gmp-devel</p>
+<p>10.yum install -y icu libicu libicu-devel</p>
+<p>11.yum  install  php-mcrypt  libmcrypt  libmcrypt-devel</p>
+<p>12.yum install  postgresql-devel</p>
+<p>13.yum install libxslt-devel</p>
+<h3 id="2-下载php7-1最新版-并解压"><a href="#2-下载php7-1最新版-并解压" class="headerlink" title="2.下载php7.1最新版,并解压"></a>2.下载php7.1最新版,并解压</h3><p>下载php7.1.22</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mkdir -p /opt/tools/php</div><div class="line"></div><div class="line"><span class="built_in">cd</span> /opt/tools/php</div><div class="line"></div><div class="line">wget http://cn2.php.net/distributions/php-7.1.22.tar.gz</div></pre></td></tr></table></figure>
+<p>解压</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tar -xzxvf  php-7.1.22.tar.gz</div><div class="line"></div><div class="line"><span class="built_in">cd</span> php-7.1.22</div></pre></td></tr></table></figure>
+<h3 id="3-编译参数配置"><a href="#3-编译参数配置" class="headerlink" title="3.编译参数配置"></a>3.编译参数配置</h3><p>‘./configure’ ‘–prefix=/usr/local/php’ ‘–with-pdo-pgsql’ ‘–with-zlib-dir’ ‘–with-freetype-dir’ ‘–enable-mbstring’ ‘–with-libxml-dir=/usr’ ‘–enable-soap’ ‘–enable-calendar’ ‘–with-curl’ ‘–with-mcrypt’ ‘–with-gd’ ‘–with-pgsql’ ‘–disable-rpath’ ‘–enable-inline-optimization’ ‘–with-bz2’ ‘–with-zlib’ ‘–enable-sockets’ ‘–enable-sysvsem’ ‘–enable-sysvshm’ ‘–enable-pcntl’ ‘–enable-mbregex’ ‘–enable-exif’ ‘–enable-bcmath’ ‘–with-mhash’ ‘–enable-zip’ ‘–with-pcre-regex’ ‘–with-pdo-mysql’ ‘–with-mysqli’ ‘–with-jpeg-dir=/usr’ ‘–with-png-dir=/usr’ ‘–enable-gd-native-ttf’ ‘–with-openssl’ ‘–with-fpm-user=www-data’ ‘–with-fpm-group=www-data’ ‘–with-libdir=/lib/x86_64-linux-gnu/‘ ‘–enable-ftp’ ‘–with-gettext’ ‘–with-xmlrpc’ ‘–with-xsl’ ‘–enable-opcache’ ‘–enable-fpm’ ‘–with-iconv’ ‘–with-xpm-dir=/usr’</p>
+<p>如果出现错误：No package libmcrypt-devel available.<br>解决办法：<br>1.yum  install epel-release  //扩展包更新包<br>2.yum  update //更新yum源</p>
+<p>出现报错 Cannot find OpenSSL’s <evp.h><br>则执行 yum install openssl openssl-devel</evp.h></p>
+<p>出现报错 Please reinstall the libcurl distribution<br>则执行 yum -y install curl-devel</p>
+<p>出现报错 jpeglib.h not found<br>则执行 yum install libjpeg.x86_64 libpng.x86_64 freetype.x86_64 libjpeg-devel.x86_64 libpng-devel.x86_64 freetype-devel.x86_64 -y<br>和执行yum install libjpeg-devel</p>
+<p>checking for BZip2 in default path… not found<br>configure: error: Please reinstall the BZip2 distribution<br>这是bzip2软件包没有安装<br>解决办法<br>yum install bzip2-devel.x86_64 -y</p>
+<p>configure: error: xpm.h not found.<br>yum install libXpm-devel</p>
+<p>error: Unable to locate gmp.h<br>Fix: yum install gmp-devel</p>
+<p>现象：Unable to detect ICU prefix or /usr//bin/icu-config failed. Please verify ICU install<br> prefix and make sure icu-config works<br>解决办法：yum install -y icu libicu libicu-devel</p>
+<p>错误：mcrypt.h not found. Please reinstall libmcrypt.<br>解决办法：yum  install  php-mcrypt  libmcrypt  libmcrypt-devel</p>
+<p>错误： configure: error: Cannot find libpq-fe.h. Please specify correct PostgreSQL installation path<br>解决办法：yum install  postgresql-devel</p>
+<p>错误 ： configure: error: xslt-config not found. Please reinstall the libxslt &gt;= 1.1.0 distribution<br>解决： yum install libxslt-devel</p>
+<h3 id="3-编译和安装"><a href="#3-编译和安装" class="headerlink" title="3.编译和安装"></a>3.编译和安装</h3><p>配置的checking 结束后，执行：<br>make &amp;&amp; make install</p>
+<h3 id="4、php配置"><a href="#4、php配置" class="headerlink" title="4、php配置"></a>4、php配置</h3><p>安装完成后，我们要把源码包中的配置文件复制到PHP安装目录下，源码包中有两个配置  php.ini-development  php.ini-production  ，看名字就知道，一个是开发环境，一个是生产环境，我们这里就复制开发环境的<br>cp php.ini-development /usr/local/php/lib/php.ini</p>
+<p>另外还需要设置环境变量 ：<br>修改/etc/profile文件使其永久性生效，并对所有系统用户生效，在文件末尾加上如下两行代码<br>PATH=$PATH:/usr/local/php/bin<br>export PATH<br>然后执行 命令 source /etc/profile</p>
+<p>php -v 就可以看到PHP版本信息了。</p>
+<h3 id="4、php-fpm配置"><a href="#4、php-fpm配置" class="headerlink" title="4、php-fpm配置"></a>4、php-fpm配置</h3><p>此时还需要配置php-fpm:</p>
+<p>cp /usr/local/php/etc/php-fpm.conf.default /usr/local/php/etc/php-fpm.conf<br>cp /usr/local/php/etc/php-fpm.d/www.conf.default /usr/local/php/etc/php-fpm.d/www.conf<br>cp ./sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm<br>chmod +x /etc/init.d/php-fpm</p>
+<p>启动php-fpm:<br>/etc/init.d/php-fpm start</p>
+<p>如果出现错误：ERROR: [pool www] cannot get uid for user ‘www-data’<br>则新建www-data 用户组：<br>groupadd www-data<br>useradd -g www-data www-data</p>
+<p>然后再启动php-fpm：<br>service php-fpm restart</p>
+<h3 id="5、php-fpm参数优化"><a href="#5、php-fpm参数优化" class="headerlink" title="5、php-fpm参数优化"></a>5、php-fpm参数优化</h3><p>vi /usr/local/php/etc/php-fpm.d/www.conf</p>
+<p>1.进程数</p>
+<p>php-fpm初始/空闲/最大worker进程数<br>    pm.max_children = 300<br>    pm.start_servers = 20<br>    pm.min_spare_servers = 5<br>    pm.max_spare_servers = 35</p>
+<p>2.最大处理请求数</p>
+<p>最大处理请求数是指一个php-fpm的worker进程在处理多少个请求后就终止掉，master进程会重新respawn一个新的。<br>这个配置的主要目的是避免php解释器或程序引用的第三方库造成的内存泄露。<br>    pm.max_requests = 10240</p>
+<p>3.最长执行时间</p>
+<p>最大执行时间在php.ini和php-fpm.conf里都可以配置，配置项分别为max_execution_time和request_terminate_timeout</p>
+<h3 id="6、Unix域Socket通信"><a href="#6、Unix域Socket通信" class="headerlink" title="6、Unix域Socket通信"></a>6、Unix域Socket通信</h3><p>之前简单介绍过Unix Domain Socket这种通信方式，参见：<a href="https://blog.csdn.net/dc_726/article/details/9336193" target="_blank" rel="external">Nginx+PHP-FPM的域Socket配置方法</a></p>
+<p>Unix域Socket因为不走网络，的确可以提高Nginx和php-fpm通信的性能，但在高并发时会不稳定。<br>Nginx会频繁报错：<br>     connect() to unix:/dev/shm/php-fcgi.sock failed (11: Resource temporarily unavailable) while connecting to upstream</p>
+<p>可以通过下面两种方式提高稳定性：<br>1）调高nginx和php-fpm中的backlog<br>     配置方法为：在nginx配置文件中这个域名的server下，在listen 80后面添加default backlog=1024。<br>     同时配置php-fpm.conf中的listen.backlog为1024，默认为128。<br>2）增加sock文件和php-fpm实例数<br>     再新建一个sock文件，在Nginx中通过upstream模块将请求负载均衡到两个sock文件背后的两套php-fpm实例上。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/23/love/yese/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/23/love/yese/" itemprop="url">夜色</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-23T15:52:51+08:00">
+                2018-10-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/爱情/" itemprop="url" rel="index">
+                    <span itemprop="name">爱情</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="夜色"><a href="#夜色" class="headerlink" title="夜色"></a>夜色</h3><p>夜色正阑珊，微微荧光闪闪。<br>一遍又一遍，轻轻把你呼唤。<br>阵阵风声好像对我在叮咛，真情怎能忘记。<br>你可记得对你许下的诺言，爱你情深意绵。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/22/linux/nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/22/linux/nginx/" itemprop="url">nginx负载均衡</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-22T11:28:11+08:00">
+                2018-10-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>随着网站、应用访问量的增加，一台服务器已经不能满足应用的需求，而需要多台服务器集群，这时就需要用到负载均衡了</p>
+<p>负载均衡的好处</p>
+<p>负载均衡优化了访问请求在服务器组之间的分配，消除了服务器之间的负载不平衡，从而提高了系统的反应速度与总体性能；</p>
+<p>负载均衡可以对服务器的运行状况进行监控，及时发现运行异常的服务器，并将访问请求转移到其它可以正常工作的服务器上，从而提高服务器组的可靠性采用了负均衡器器以后，可以根据业务量的发展情况灵活增加服务器，系统的扩展能力得到提高，同时简化了管理。</p>
+<h2 id="负载均衡的几种常用方式"><a href="#负载均衡的几种常用方式" class="headerlink" title="负载均衡的几种常用方式"></a>负载均衡的几种常用方式</h2><h3 id="1-轮询（默认）"><a href="#1-轮询（默认）" class="headerlink" title="1.轮询（默认）"></a>1.轮询（默认）</h3><p>每个请求按时间顺序逐一分配到不同的后端服务器，如果后端服务器down掉，能自动剔除。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">upstream backserver &#123;</div><div class="line">    server 192.168.0.14;</div><div class="line">    server 192.168.0.15;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="2-weight权重"><a href="#2-weight权重" class="headerlink" title="2.weight权重"></a>2.weight权重</h3><p>指定轮询几率，weight和访问比率成正比，用于后端服务器性能不均的情况。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">upstream backserver &#123;</div><div class="line">    server 192.168.0.14 weight=3;</div><div class="line">    server 192.168.0.15 weight=7;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>权重越高，在被访问的概率越大，如上例，分别是30%，70%</p>
+<h3 id="3-ip-hash-（解决session问题）"><a href="#3-ip-hash-（解决session问题）" class="headerlink" title="3.ip_hash （解决session问题）"></a>3.ip_hash （解决session问题）</h3><p>方式1和2存在一个问题，在负载均衡系统中，假如用户在某台服务器上登录了，那么该用户第二次请求的时候，每次请求都会随机重新定位到服务器集群中的某一个，那么已经登录某一个服务器的用户再重新定位到另一个服务器，其登录信息将会丢失，这样显然是不妥的。</p>
+<p>我们可以采用ip_hash指令解决这个问题，如果客户已经访问了某个服务器，当用户再次访问时，会将该请求通过哈希算法，自动定位到该服务器</p>
+<p>每个请求按访问ip的hash结果分配，这样每个访客固定访问一个后端服务器，可以解决session的问题。</p>
+<p>在redis.conf中进行配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">upstream backserver &#123;</div><div class="line">    ip_hash;</div><div class="line">    server 192.168.0.14:88;</div><div class="line">    server 192.168.0.15:80;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="4、fair（第三方）"><a href="#4、fair（第三方）" class="headerlink" title="4、fair（第三方）"></a>4、fair（第三方）</h3><p>按后端服务器的响应时间来分配请求，响应时间短的优先分配。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">upstream backserver &#123;</div><div class="line">    server server1;</div><div class="line">    server server2;</div><div class="line">    fair;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="5、url-hash（第三方）"><a href="#5、url-hash（第三方）" class="headerlink" title="5、url_hash（第三方）"></a>5、url_hash（第三方）</h3><p>按访问url的hash结果来分配请求，使每个url定向到同一个后端服务器，后端服务器为缓存时比较有效。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">upstream backserver &#123;</div><div class="line">    server squid1:3128;</div><div class="line">    server squid2:3128;</div><div class="line">    <span class="built_in">hash</span> <span class="variable">$request_uri</span>;</div><div class="line">    hash_method crc32;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="LNMP环境下负载均衡"><a href="#LNMP环境下负载均衡" class="headerlink" title="LNMP环境下负载均衡"></a>LNMP环境下负载均衡</h2><h3 id="1-域名解析"><a href="#1-域名解析" class="headerlink" title="1.域名解析"></a>1.域名解析</h3><p>以阿里云服务器为例，进入阿里云管理后台，域名管理处，选择excample.com域名解析到服务器ip</p>
+<h3 id="2-nginx配置"><a href="#2-nginx配置" class="headerlink" title="2.nginx配置"></a>2.nginx配置</h3><p>域名解析后，进入nginx配置文件，（以centos 7下的yum install nginx为例）</p>
+<p>80端口分发服务配置</p>
+<p>vi /etc/nginx/conf.d/test_example_com.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">upstream test.example.com &#123;</div><div class="line"><span class="comment">#    ip_hash;</span></div><div class="line">    server 192.168.214.81:8089 weight=5;</div><div class="line">    server 192.168.214.81:8088 weight=3;</div><div class="line">&#125;</div><div class="line"></div><div class="line">server &#123;</div><div class="line">	listen       80;</div><div class="line">	server_name  test.example.com;</div><div class="line">		</div><div class="line">    location / &#123;</div><div class="line">	    proxy_pass   http://test.example.com;</div><div class="line">        proxy_set_header   Host             <span class="variable">$host</span>;</div><div class="line">        proxy_set_header   X-Real-IP        <span class="variable">$remote_addr</span>;</div><div class="line">        proxy_set_header   X-Forwarded-For  <span class="variable">$proxy_add_x_forwarded_for</span>;</div><div class="line">	    index index.php index.html index.htm;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">注意：proxy_pass反向代理的upstream域名需要和server_name一致，否则会出现访问报错</div></pre></td></tr></table></figure>
+<p>8088端口解析服务配置</p>
+<p>vi /etc/nginx/conf.d/example8088.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">server</div><div class="line">&#123;</div><div class="line">    listen  8088;</div><div class="line">    server_name  192.168.214.81;</div><div class="line">    index index.php index.htm index.html;</div><div class="line">    root    /opt/web/xxx/public/;</div><div class="line"></div><div class="line">    location / &#123;</div><div class="line">        location ~* \.(js|css|html|htm)$ &#123;</div><div class="line">            <span class="keyword">if</span> (<span class="_">-f</span> <span class="variable">$request_filename</span>) &#123;</div><div class="line">                root /opt/web/a/public/;</div><div class="line">                expires  1d;</div><div class="line">                <span class="built_in">break</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (!<span class="_">-e</span> <span class="variable">$request_filename</span>) &#123;</div><div class="line">            rewrite  ^(.*)$  /index.php?s=/<span class="variable">$1</span>  last;</div><div class="line">        &#125;</div><div class="line">        index index.php index.html index.htm;</div><div class="line">        try_files <span class="variable">$uri</span> <span class="variable">$uri</span>/ /index.php;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    location ~ \.php$ &#123;</div><div class="line">        try_files <span class="variable">$uri</span> =404;</div><div class="line">        fastcgi_pass   127.0.0.1:9000;</div><div class="line">        fastcgi_index  index.php;</div><div class="line">        fastcgi_param  SCRIPT_FILENAME   <span class="variable">$document_root</span><span class="variable">$fastcgi_script_name</span>;</div><div class="line">        include        fastcgi_params;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>8089端口解析服务配置</p>
+<p>vi /etc/nginx/conf.d/example8089.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">server</div><div class="line">&#123;</div><div class="line">    listen  8089;</div><div class="line">    server_name  192.168.214.81;</div><div class="line">    index index.php index.htm index.html;</div><div class="line">    root    /opt/web/xxx/public/;</div><div class="line"></div><div class="line">    location / &#123;</div><div class="line">        location ~* \.(js|css|html|htm)$ &#123;</div><div class="line">            <span class="keyword">if</span> (<span class="_">-f</span> <span class="variable">$request_filename</span>) &#123;</div><div class="line">                root /opt/web/b/public/;</div><div class="line">                expires  1d;</div><div class="line">                <span class="built_in">break</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (!<span class="_">-e</span> <span class="variable">$request_filename</span>) &#123;</div><div class="line">            rewrite  ^(.*)$  /index.php?s=/<span class="variable">$1</span>  last;</div><div class="line">        &#125;</div><div class="line">        index index.php index.html index.htm;</div><div class="line">        try_files <span class="variable">$uri</span> <span class="variable">$uri</span>/ /index.php;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    location ~ \.php$ &#123;</div><div class="line">        try_files <span class="variable">$uri</span> =404;</div><div class="line">        fastcgi_pass   127.0.0.1:9000;</div><div class="line">        fastcgi_index  index.php;</div><div class="line">        fastcgi_param  SCRIPT_FILENAME   <span class="variable">$document_root</span><span class="variable">$fastcgi_script_name</span>;</div><div class="line">        include        fastcgi_params;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>重启web服务器nginx<br>service nginx restart</p>
+<p>往两个系统的首页写入标识内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">echo</span> <span class="string">'8088 a'</span> /opt/web/a/public/index.html</div><div class="line"></div><div class="line"><span class="built_in">echo</span> <span class="string">'8089 b'</span> /opt/web/b/public/index.html</div></pre></td></tr></table></figure>
+<p>浏览器访问 test.excample.com</p>
+<p>可以看到不停的变换’8089 b’和’8088 a’ 说明负载均衡成功运行</p>
+<p>将ip_hash;前的#号去掉，重启web服务器nginx</p>
+<p>service nginx restart</p>
+<p>浏览器访问 test.excample.com</p>
+<p>可以浏览器输出的内容并不会变换，说明iphash模式下的负载均衡运行成功</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>nginx监听本地的80端口，80端口接收到请求后，将请求转发到192.168.214.81:8089，192.168.214.81:8088应用中的其中一个，如果映射的策略是ip_hash，这个策略会对请求的ip进行hash运算并将结果映射到其中一个应用，它能确保一个确定的请求ip会被映射到一个确定的服务，这样就连session的问题也就解决了。如果不需要考虑session，可选用默认的轮询或权重</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/19/linux/nfs/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1310,459 +1821,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/21/php/soap/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sir051223">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Forest">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/21/php/soap/" itemprop="url">php通过SoapClient调用webservice接口以及注意项</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-21T17:11:37+08:00">
-                2018-06-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Php/" itemprop="url" rel="index">
-                    <span itemprop="name">Php</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="一、安装soap扩展"><a href="#一、安装soap扩展" class="headerlink" title="一、安装soap扩展"></a>一、安装soap扩展</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">1、Linux下安装soap模块</div><div class="line">   </div><div class="line">   查看soap模块是否安装的办法：在php的安装目录下运行php -m来查看</div><div class="line">   <span class="variable">$phppath</span>/bin/php -m | grep soap</div><div class="line"></div><div class="line">   如果没有安装，则进入php的安装源文件夹</div><div class="line">   <span class="built_in">cd</span> php-<span class="variable">$version</span>/ext/soap</div><div class="line">   // 进入文件夹后执行</div><div class="line">   <span class="variable">$phppath</span>/bin/phpize    </div><div class="line"></div><div class="line">   然后安装编译</div><div class="line">   make &amp; make install </div><div class="line"></div><div class="line">   安装好之后会提示soap.so文件的保存路径</div><div class="line"></div><div class="line">   接着修改php.ini文件</div><div class="line">   ;extension=soap.so</div><div class="line">   去掉前面的;</div><div class="line"></div><div class="line">   重启apache或者php-fpm</div><div class="line">   service httpd restart 或者 /etc/init.d/php-fpm restart</div></pre></td></tr></table></figure>
-<h3 id="二、客户端调用示例代码"><a href="#二、客户端调用示例代码" class="headerlink" title="二、客户端调用示例代码"></a>二、客户端调用示例代码</h3><p>1、无SoapHeader认证的情况</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">   try&#123;</div><div class="line">    <span class="variable">$client</span> = new SoapClient(<span class="string">'http://www.whatever.com/WebService.asmx?wsdl'</span>);</div><div class="line">    <span class="variable">$result</span> = <span class="variable">$client</span>-&gt;toDo(<span class="variable">$paramArr</span>);</div><div class="line">    <span class="variable">$result</span> = simplexml_load_string(<span class="variable">$result</span>-&gt;toDoResult);</div><div class="line">    <span class="variable">$state</span> = <span class="variable">$result</span>-&gt;smsstate;</div><div class="line">&#125;catch (SoapFault <span class="variable">$fault</span>)&#123;&#125;</div><div class="line"><span class="built_in">echo</span> <span class="variable">$state</span>;</div></pre></td></tr></table></figure>
-<p>2、有SoapHeader验证的情况</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">   <span class="variable">$soap</span> = new \SoapClient(<span class="string">'http://www.whatever.com/WebService.asmx?wsdl'</span>);</div><div class="line"></div><div class="line">/*</div><div class="line"> *SoapHeader参数说明如下所示:</div><div class="line"> *<span class="string">'http://tempuri.org/'</span>   namespace(命名空间可省略 根据服务端定)</div><div class="line"> *<span class="string">'MySoapHeader'</span>          SoapHeader头的类名</div><div class="line"> *<span class="string">'array(...)'</span>            存放标识身份的字符串参数</div><div class="line"> *<span class="string">'true'</span>                  是否必须处理该header</div><div class="line">*/</div><div class="line"></div><div class="line"><span class="variable">$head</span> = new \SoapHeader(http://tempuri.org/<span class="string">', '</span>MySoapHeader<span class="string">', array('</span>uname<span class="string">'=&gt;'</span>admin<span class="string">','</span><span class="built_in">pwd</span><span class="string">'=&gt;'</span>123456<span class="string">'), true);</span></div><div class="line"></div><div class="line">//添加soapheader</div><div class="line">$soap-&gt;__setSoapHeaders($head);</div><div class="line"></div><div class="line">//调取需要的webservice方法</div><div class="line">$res = $s-&gt;toDo(array('param<span class="string">'=&gt;'</span>val<span class="string">'));</span></div><div class="line"></div><div class="line">echo $res-&gt;toDoResult;</div></pre></td></tr></table></figure>
-<h3 id="三、参数值传输接收不到的情况"><a href="#三、参数值传输接收不到的情况" class="headerlink" title="三、参数值传输接收不到的情况"></a>三、参数值传输接收不到的情况</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">第一次传递的参数，在服务端接收参数正常，修改参数名后，给参数赋值，在服务端出现接收不到参数值的现象</div><div class="line"></div><div class="line">调试1：安装soapui，发起调用 -&gt; 调用正常  判断：排除服务器端问题</div><div class="line"></div><div class="line">调试2：将参数值修改为固定字符串值，再发起调用 -&gt; 依然接收不到 判断：排除参数赋值失效</div><div class="line"></div><div class="line">调试3：改变参数位置，再发起调用 -&gt; 依然接收不到  判断：排除参数位置影响</div><div class="line"></div><div class="line">调试4：删除runtime缓存文件，再发起调用 -&gt; 依然接收不到  判断：排除程序缓存文件影响</div><div class="line"></div><div class="line">调试5：重启apache或php-fpm，再发起调用 -&gt; 依然接收不到  判断：排除web服务器环境问题</div><div class="line"></div><div class="line">调试6：本地wamp环境，发起调用 -&gt; 接收正常  判断：soap环境差异问题导致，查找到是soap缓存的问题</div><div class="line"></div><div class="line">修改代码</div><div class="line"></div><div class="line"><span class="variable">$soap</span> = new \SoapClient(<span class="string">'http://www.whatever.com/WebService.asmx?wsdl'</span>);</div><div class="line"></div><div class="line">为</div><div class="line"></div><div class="line"><span class="variable">$soap</span> = new \SoapClient(<span class="string">'http://www.whatever.com/WebService.asmx?wsdl'</span>, array(<span class="string">'cache_wsdl'</span> =&gt; 0));</div><div class="line"></div><div class="line">发起调用 -&gt; 接收正常</div></pre></td></tr></table></figure>
-<h3 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">参数名接收到，但参数值接收不到，这很怪异，一开始没有怀疑缓存原因，归根到底是对soap的基础理解得不够深刻。使用排除法定位问题的</div><div class="line">速度还是比较局限。透过现象去了解程序的本质，设计思想，对于分析、解决问题有很大的帮助</div></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/13/essay/mother/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sir051223">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Forest">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/13/essay/mother/" itemprop="url">母亲</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-13T09:59:36+08:00">
-                2018-06-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/随笔/" itemprop="url" rel="index">
-                    <span itemprop="name">随笔</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="在路上"><a href="#在路上" class="headerlink" title="在路上"></a>在路上</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6月6日早上父亲的一通电话，平静的生活像打翻了调味瓶，震惊、慌乱、悲伤、惋惜、愤怒、不甘，一系列的情绪变化。<br>父亲的电话告知母亲确诊患宫颈癌，整个人都不好了，先去百度相关知识，不幸中的万幸宫颈癌还可以治。然后问朋友同学，景爷、阿东、震哥、韦大哥推荐的朱医生、妇幼的腾医生，感谢这些好心人的帮助。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6月8日下午，和哥哥约好一起回家，下雨天气视野不好，不坐同一辆车，广州大雨堵城，汽车出广州城区花了4个小时，回到岑溪已经9点，在岑溪住一晚，明早等爸妈后一起去梧州。9号早上到梧州工人医院，将近12点轮到，得知工人医院没有放疗、化疗设备，桂东也是。建议去红会，去到红会12点多，红会已经进入下班时间。打电话给村里同患人介绍的医生，问能不能住院，她说周末不上班，顿时心里拔凉，感觉医院条件不好。6月11日再到红会，找到介绍的医生，在放疗科，医生说现在没有床位，要我们现在外面住，边做检查边等。幸亏当时没有答应，放疗的环境太差，人也不好。去挂门诊看，门诊说红会只有开刀，没有微创，建议去南宁、广州。如果决定在红会做，需要先做检查，然后预约床位，不一定什么时候有，在门诊做的检查不能报销医保（这就是社会）。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;母亲怕痛，上世纪80年代的计划生育，妈妈被迫人流，没有麻醉，做完手术后坐单车走几十公里山里回家，一路上颠簸和疼痛是她的噩梦。中午吃饭的时候讨论去哪治疗，广州南宁的花费一期承担得起，但现在房子压力以及后期化疗费用却承担不了，离家更近，综合考虑还是选择在红会。去网上查了资料，看了江布英医生的履历和论文事迹，想要请她帮忙，于是从下午1点20开始在13楼等她，她今天在上手术，不知道什么时候能下手术，但是确信一定能等到她。到下午4点多，终于等到她，没有寒暄，直入主题，最终还是收了入院，感谢江医生。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;入院前的检查需要量体温、量血压，因为刚刚从13楼走下1楼，第一次测量的血压有点高，护士让我们到旁边休息10分钟后，再过来测。休息期间，我感觉到母亲脚在颤动，她在担心焦虑，她害怕痛，她已经好几个晚上没有休息好了。看到她这个样子，我心里很不是滋味，愤怒过，问老天爷为什么要让如此善良的人患病，一辈子问心无愧如她，却患此病。不甘过，想去更好条件的医院，南宁、广州，低头看看自己，是如此的不自量力，给不了最好的，选择最合适的。母亲很年轻，在18岁的时候就生下了我，她这么年轻患病，惋惜，然而却无能为力。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;泰戈尔说，“你的负担将变成礼物，你受的苦将照亮你的路。”,悲观的人，只会让自己深陷于苦难的泥潭；乐观的人，会为自己照亮走出黑暗的方向。希望母亲快快好起来。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这段期间，家里天空似乎有一朵乌云笼罩，压得喘不过气来，无能为力、焦虑、等待、语言上的无助让我难受。现在回到公司工作，睡觉偶然惊醒，梦里全是母亲的事情，想来首先想到的是这个事实，有些压抑。看《滚蛋吧，肿瘤君》，希望能学到一些道理和鸡汤帮助和宽慰妈妈，也宽慰自己。让自己不要过于担心，直面自己和生活。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;做最坏的准备，想最好的事情。感觉亏欠家里太多，儿子太自私，有些愧疚。想母亲康复后，带她去哪里玩，带她看看外面的世界，这也是我目前最想做的事情。愿顺</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/28/linux/redis/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sir051223">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Forest">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/28/linux/redis/" itemprop="url">redis安全设置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-28T17:08:58+08:00">
-                2018-05-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>Redis的安全设计是在”Redis运行在可信环境”这个前提下做出的，在生产环境运行时不能允许外界直接连接到Redis服务器上，而应该通过应用程序进行中转，运行在可信的环境中是保证Redis安全的最重要方法。</p>
-<p>在洞悉漏洞官网中，有一个漏洞叫“Redis 未授权访问缺陷可轻易导致系统被黑”，链接<a href="https://www.seebug.org/vuldb/ssvid-89715。可见redis安全的重要性" target="_blank" rel="external">https://www.seebug.org/vuldb/ssvid-89715。可见redis安全的重要性</a></p>
-<h3 id="1-为redis设置密码"><a href="#1-为redis设置密码" class="headerlink" title="1.为redis设置密码"></a>1.为redis设置密码</h3><p>在redis.conf中进行配置：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">requirepass redispwd  <span class="comment"># redispwd即为redis的启动密码,在设置时，一定要选择复杂性高的密码</span></div></pre></td></tr></table></figure>
-<h3 id="2-危险命令重命名或禁用"><a href="#2-危险命令重命名或禁用" class="headerlink" title="2.危险命令重命名或禁用"></a>2.危险命令重命名或禁用</h3><p>在redis.conf中进行配置：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">rename-command CONFIG rename_config   <span class="comment"># 重命名CONFIG命令  </span></div><div class="line">rename-command SAVE <span class="string">""</span>  <span class="comment"># 禁用SAVE命令</span></div></pre></td></tr></table></figure>
-<h3 id="3-配置bind选项-限定可以连接Redis服务器的IP"><a href="#3-配置bind选项-限定可以连接Redis服务器的IP" class="headerlink" title="3.配置bind选项, 限定可以连接Redis服务器的IP"></a>3.配置bind选项, 限定可以连接Redis服务器的IP</h3><p>在redis.conf中进行配置：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">bind</span> 127.0.0.1  <span class="comment"># 限定只能本地访问</span></div></pre></td></tr></table></figure>
-<h3 id="4-使用低权限用户启动redis"><a href="#4-使用低权限用户启动redis" class="headerlink" title="4.使用低权限用户启动redis"></a>4.使用低权限用户启动redis</h3><p>先停止redis，然后切换至低权限用户身份，su lowuser，执行启动</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/path/redis/bin/redis-server /path/redis/etc/redis.conf</div></pre></td></tr></table></figure>
-<p>会出现 cannot create: Permission denied 报错，解决办法为赋予权限</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chown -R lowgroup.lowuser /path/redis</div></pre></td></tr></table></figure>
-<h3 id="5-修改redis默认端口号"><a href="#5-修改redis默认端口号" class="headerlink" title="5.修改redis默认端口号"></a>5.修改redis默认端口号</h3><p>redis默认端口号为6379，在redis.conf配置文件修改为其它端口号</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">port 63791</div></pre></td></tr></table></figure>
-<p>如果是云服务器，可以要在云服务器管理后台开启关闭对应redis的出网端口</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1808,7 +1871,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">22</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

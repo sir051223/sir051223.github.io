@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="1.安装前准备1.检查是否安装了gcc ,没有的话执行yum install gcc
+2.检查是否安装了libxml2 ,没有的话执行yum install libxml2
+3.检查是否安装了libxml2-devel,没有的话执行yum install libxml2-devel
+4.检查是否安装了openssl,没有的话执行yum install openssl openssl-devel
+5">
+<meta property="og:type" content="article">
+<meta property="og:title" content="centos7下源码编译安装php7.1最新版本">
+<meta property="og:url" content="http://yoursite.com/2018/10/23/linux/php/index.html">
+<meta property="og:site_name" content="Forest">
+<meta property="og:description" content="1.安装前准备1.检查是否安装了gcc ,没有的话执行yum install gcc
+2.检查是否安装了libxml2 ,没有的话执行yum install libxml2
+3.检查是否安装了libxml2-devel,没有的话执行yum install libxml2-devel
+4.检查是否安装了openssl,没有的话执行yum install openssl openssl-devel
+5">
+<meta property="og:updated_time" content="2018-10-23T09:30:05.726Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="centos7下源码编译安装php7.1最新版本">
+<meta name="twitter:description" content="1.安装前准备1.检查是否安装了gcc ,没有的话执行yum install gcc
+2.检查是否安装了libxml2 ,没有的话执行yum install libxml2
+3.检查是否安装了libxml2-devel,没有的话执行yum install libxml2-devel
+4.检查是否安装了openssl,没有的话执行yum install openssl openssl-devel
+5">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/23/linux/php/"/>
+
+
+
+
+
+  <title>centos7下源码编译安装php7.1最新版本 | Forest</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Forest</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/23/linux/php/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">centos7下源码编译安装php7.1最新版本</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-23T16:21:55+08:00">
+                2018-10-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="1-安装前准备"><a href="#1-安装前准备" class="headerlink" title="1.安装前准备"></a>1.安装前准备</h3><p>1.检查是否安装了gcc ,没有的话执行yum install gcc</p>
+<p>2.检查是否安装了libxml2 ,没有的话执行yum install libxml2</p>
+<p>3.检查是否安装了libxml2-devel,没有的话执行yum install libxml2-devel</p>
+<p>4.检查是否安装了openssl,没有的话执行yum install openssl openssl-devel</p>
+<p>5.curl安装 yum -y install curl-devel</p>
+<p>6.图片库安装 yum install libjpeg.x86_64 libpng.x86_64 freetype.x86_64 libjpeg-devel.x86_64 libpng-devel.x86_64 freetype-devel.x86_64 -y</p>
+<p>7.图片库安装 yum install libjpeg-devel</p>
+<p>8.解压软件安装 yum install bzip2-devel.x86_64 -y</p>
+<p>9.yum install libXpm-devel  10.yum install gmp-devel</p>
+<p>10.yum install -y icu libicu libicu-devel</p>
+<p>11.yum  install  php-mcrypt  libmcrypt  libmcrypt-devel</p>
+<p>12.yum install  postgresql-devel</p>
+<p>13.yum install libxslt-devel</p>
+<h3 id="2-下载php7-1最新版-并解压"><a href="#2-下载php7-1最新版-并解压" class="headerlink" title="2.下载php7.1最新版,并解压"></a>2.下载php7.1最新版,并解压</h3><p>下载php7.1.22</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mkdir -p /opt/tools/php</div><div class="line"></div><div class="line"><span class="built_in">cd</span> /opt/tools/php</div><div class="line"></div><div class="line">wget http://cn2.php.net/distributions/php-7.1.22.tar.gz</div></pre></td></tr></table></figure>
+<p>解压</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tar -xzxvf  php-7.1.22.tar.gz</div><div class="line"></div><div class="line"><span class="built_in">cd</span> php-7.1.22</div></pre></td></tr></table></figure>
+<h3 id="3-编译参数配置"><a href="#3-编译参数配置" class="headerlink" title="3.编译参数配置"></a>3.编译参数配置</h3><p>‘./configure’ ‘–prefix=/usr/local/php’ ‘–with-pdo-pgsql’ ‘–with-zlib-dir’ ‘–with-freetype-dir’ ‘–enable-mbstring’ ‘–with-libxml-dir=/usr’ ‘–enable-soap’ ‘–enable-calendar’ ‘–with-curl’ ‘–with-mcrypt’ ‘–with-gd’ ‘–with-pgsql’ ‘–disable-rpath’ ‘–enable-inline-optimization’ ‘–with-bz2’ ‘–with-zlib’ ‘–enable-sockets’ ‘–enable-sysvsem’ ‘–enable-sysvshm’ ‘–enable-pcntl’ ‘–enable-mbregex’ ‘–enable-exif’ ‘–enable-bcmath’ ‘–with-mhash’ ‘–enable-zip’ ‘–with-pcre-regex’ ‘–with-pdo-mysql’ ‘–with-mysqli’ ‘–with-jpeg-dir=/usr’ ‘–with-png-dir=/usr’ ‘–enable-gd-native-ttf’ ‘–with-openssl’ ‘–with-fpm-user=www-data’ ‘–with-fpm-group=www-data’ ‘–with-libdir=/lib/x86_64-linux-gnu/‘ ‘–enable-ftp’ ‘–with-gettext’ ‘–with-xmlrpc’ ‘–with-xsl’ ‘–enable-opcache’ ‘–enable-fpm’ ‘–with-iconv’ ‘–with-xpm-dir=/usr’</p>
+<p>如果出现错误：No package libmcrypt-devel available.<br>解决办法：<br>1.yum  install epel-release  //扩展包更新包<br>2.yum  update //更新yum源</p>
+<p>出现报错 Cannot find OpenSSL’s <evp.h><br>则执行 yum install openssl openssl-devel</evp.h></p>
+<p>出现报错 Please reinstall the libcurl distribution<br>则执行 yum -y install curl-devel</p>
+<p>出现报错 jpeglib.h not found<br>则执行 yum install libjpeg.x86_64 libpng.x86_64 freetype.x86_64 libjpeg-devel.x86_64 libpng-devel.x86_64 freetype-devel.x86_64 -y<br>和执行yum install libjpeg-devel</p>
+<p>checking for BZip2 in default path… not found<br>configure: error: Please reinstall the BZip2 distribution<br>这是bzip2软件包没有安装<br>解决办法<br>yum install bzip2-devel.x86_64 -y</p>
+<p>configure: error: xpm.h not found.<br>yum install libXpm-devel</p>
+<p>error: Unable to locate gmp.h<br>Fix: yum install gmp-devel</p>
+<p>现象：Unable to detect ICU prefix or /usr//bin/icu-config failed. Please verify ICU install<br> prefix and make sure icu-config works<br>解决办法：yum install -y icu libicu libicu-devel</p>
+<p>错误：mcrypt.h not found. Please reinstall libmcrypt.<br>解决办法：yum  install  php-mcrypt  libmcrypt  libmcrypt-devel</p>
+<p>错误： configure: error: Cannot find libpq-fe.h. Please specify correct PostgreSQL installation path<br>解决办法：yum install  postgresql-devel</p>
+<p>错误 ： configure: error: xslt-config not found. Please reinstall the libxslt &gt;= 1.1.0 distribution<br>解决： yum install libxslt-devel</p>
+<h3 id="3-编译和安装"><a href="#3-编译和安装" class="headerlink" title="3.编译和安装"></a>3.编译和安装</h3><p>配置的checking 结束后，执行：<br>make &amp;&amp; make install</p>
+<h3 id="4、php配置"><a href="#4、php配置" class="headerlink" title="4、php配置"></a>4、php配置</h3><p>安装完成后，我们要把源码包中的配置文件复制到PHP安装目录下，源码包中有两个配置  php.ini-development  php.ini-production  ，看名字就知道，一个是开发环境，一个是生产环境，我们这里就复制开发环境的<br>cp php.ini-development /usr/local/php/lib/php.ini</p>
+<p>另外还需要设置环境变量 ：<br>修改/etc/profile文件使其永久性生效，并对所有系统用户生效，在文件末尾加上如下两行代码<br>PATH=$PATH:/usr/local/php/bin<br>export PATH<br>然后执行 命令 source /etc/profile</p>
+<p>php -v 就可以看到PHP版本信息了。</p>
+<h3 id="4、php-fpm配置"><a href="#4、php-fpm配置" class="headerlink" title="4、php-fpm配置"></a>4、php-fpm配置</h3><p>此时还需要配置php-fpm:</p>
+<p>cp /usr/local/php/etc/php-fpm.conf.default /usr/local/php/etc/php-fpm.conf<br>cp /usr/local/php/etc/php-fpm.d/www.conf.default /usr/local/php/etc/php-fpm.d/www.conf<br>cp ./sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm<br>chmod +x /etc/init.d/php-fpm</p>
+<p>启动php-fpm:<br>/etc/init.d/php-fpm start</p>
+<p>如果出现错误：ERROR: [pool www] cannot get uid for user ‘www-data’<br>则新建www-data 用户组：<br>groupadd www-data<br>useradd -g www-data www-data</p>
+<p>然后再启动php-fpm：<br>service php-fpm restart</p>
+<h3 id="5、php-fpm参数优化"><a href="#5、php-fpm参数优化" class="headerlink" title="5、php-fpm参数优化"></a>5、php-fpm参数优化</h3><p>vi /usr/local/php/etc/php-fpm.d/www.conf</p>
+<p>1.进程数</p>
+<p>php-fpm初始/空闲/最大worker进程数<br>    pm.max_children = 300<br>    pm.start_servers = 20<br>    pm.min_spare_servers = 5<br>    pm.max_spare_servers = 35</p>
+<p>2.最大处理请求数</p>
+<p>最大处理请求数是指一个php-fpm的worker进程在处理多少个请求后就终止掉，master进程会重新respawn一个新的。<br>这个配置的主要目的是避免php解释器或程序引用的第三方库造成的内存泄露。<br>    pm.max_requests = 10240</p>
+<p>3.最长执行时间</p>
+<p>最大执行时间在php.ini和php-fpm.conf里都可以配置，配置项分别为max_execution_time和request_terminate_timeout</p>
+<h3 id="6、Unix域Socket通信"><a href="#6、Unix域Socket通信" class="headerlink" title="6、Unix域Socket通信"></a>6、Unix域Socket通信</h3><p>之前简单介绍过Unix Domain Socket这种通信方式，参见：<a href="https://blog.csdn.net/dc_726/article/details/9336193" target="_blank" rel="external">Nginx+PHP-FPM的域Socket配置方法</a></p>
+<p>Unix域Socket因为不走网络，的确可以提高Nginx和php-fpm通信的性能，但在高并发时会不稳定。<br>Nginx会频繁报错：<br>     connect() to unix:/dev/shm/php-fcgi.sock failed (11: Resource temporarily unavailable) while connecting to upstream</p>
+<p>可以通过下面两种方式提高稳定性：<br>1）调高nginx和php-fpm中的backlog<br>     配置方法为：在nginx配置文件中这个域名的server下，在listen 80后面添加default backlog=1024。<br>     同时配置php-fpm.conf中的listen.backlog为1024，默认为128。<br>2）增加sock文件和php-fpm实例数<br>     再新建一个sock文件，在Nginx中通过upstream模块将请求负载均衡到两个sock文件背后的两套php-fpm实例上。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/23/love/yese/" rel="next" title="夜色">
+                <i class="fa fa-chevron-left"></i> 夜色
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="sir051223" />
+          <p class="site-author-name" itemprop="name">sir051223</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-安装前准备"><span class="nav-number">1.</span> <span class="nav-text">1.安装前准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-下载php7-1最新版-并解压"><span class="nav-number">2.</span> <span class="nav-text">2.下载php7.1最新版,并解压</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-编译参数配置"><span class="nav-number">3.</span> <span class="nav-text">3.编译参数配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-编译和安装"><span class="nav-number">4.</span> <span class="nav-text">3.编译和安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、php配置"><span class="nav-number">5.</span> <span class="nav-text">4、php配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、php-fpm配置"><span class="nav-number">6.</span> <span class="nav-text">4、php-fpm配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、php-fpm参数优化"><span class="nav-number">7.</span> <span class="nav-text">5、php-fpm参数优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6、Unix域Socket通信"><span class="nav-number">8.</span> <span class="nav-text">6、Unix域Socket通信</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sir051223</span>
+
+  
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
