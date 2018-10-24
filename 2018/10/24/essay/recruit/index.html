@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="阿里技术面试的思路123转载说明：阿里技术面试思路，转载来至阿里技术公众号，原创宗心，以借鉴面试筛选人才想法，如有冒犯之处，请告知，我会第一时间删除，谢谢。
+12345阿里妹导读：知己知彼、百战不殆，面试也是如此。只有充分了解面试官的思路，才能更好地在面试中充分展现自己。今天，阿里高级技术专家将分享自己作为面试官的心得与体会。如果你是面试者，可以借此为镜，对照发现自己的长处与不足，有针对性学习成长">
+<meta property="og:type" content="article">
+<meta property="og:title" content="阿里技术面试的思路（转载）">
+<meta property="og:url" content="http://yoursite.com/2018/10/24/essay/recruit/index.html">
+<meta property="og:site_name" content="Forest">
+<meta property="og:description" content="阿里技术面试的思路123转载说明：阿里技术面试思路，转载来至阿里技术公众号，原创宗心，以借鉴面试筛选人才想法，如有冒犯之处，请告知，我会第一时间删除，谢谢。
+12345阿里妹导读：知己知彼、百战不殆，面试也是如此。只有充分了解面试官的思路，才能更好地在面试中充分展现自己。今天，阿里高级技术专家将分享自己作为面试官的心得与体会。如果你是面试者，可以借此为镜，对照发现自己的长处与不足，有针对性学习成长">
+<meta property="og:updated_time" content="2018-10-24T10:01:15.200Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="阿里技术面试的思路（转载）">
+<meta name="twitter:description" content="阿里技术面试的思路123转载说明：阿里技术面试思路，转载来至阿里技术公众号，原创宗心，以借鉴面试筛选人才想法，如有冒犯之处，请告知，我会第一时间删除，谢谢。
+12345阿里妹导读：知己知彼、百战不殆，面试也是如此。只有充分了解面试官的思路，才能更好地在面试中充分展现自己。今天，阿里高级技术专家将分享自己作为面试官的心得与体会。如果你是面试者，可以借此为镜，对照发现自己的长处与不足，有针对性学习成长">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/24/essay/recruit/"/>
+
+
+
+
+
+  <title>阿里技术面试的思路（转载） | Forest</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Forest</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/24/essay/recruit/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">阿里技术面试的思路（转载）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-24T16:31:12+08:00">
+                2018-10-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/随笔/" itemprop="url" rel="index">
+                    <span itemprop="name">随笔</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="阿里技术面试的思路"><a href="#阿里技术面试的思路" class="headerlink" title="阿里技术面试的思路"></a>阿里技术面试的思路</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">转载说明：阿里技术面试思路，转载来至阿里技术公众号，原创宗心，以借鉴面试筛选人才想法，如有冒犯之处，</div><div class="line"></div><div class="line">请告知，我会第一时间删除，谢谢。</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">阿里妹导读：知己知彼、百战不殆，面试也是如此。只有充分了解面试官的思路，才能更好地在面试中充分展现自己。</div><div class="line"></div><div class="line">今天，阿里高级技术专家将分享自己作为面试官的心得与体会。如果你是面试者，可以借此为镜，对照发现自己的长处与不足，</div><div class="line"></div><div class="line">有针对性学习成长；如果你是面试官，相信也能通过他的讲述，有所启发。</div></pre></td></tr></table></figure>
+<p>招聘是团队管理者工作中的重要一环。本文会结合自己亲身经历以及接受的招聘培训，综合分析怎么找到我们要的人，也希望可以通过招聘这面镜子照亮自己，怎样成为一个更好的工程师。</p>
+<h3 id="1-招聘的目的"><a href="#1-招聘的目的" class="headerlink" title="1.招聘的目的"></a>1.招聘的目的</h3><p>当今社会，技术已经成为影响商业成功的关键因素，工程师成为了这些公司最宝贵的财富，没有优秀的人组成团队来完成商业目标，公司根本不可能有今天的成就。所以招聘，就是选择最优秀的人。</p>
+<h3 id="2-招什么样的人？"><a href="#2-招什么样的人？" class="headerlink" title="2.招什么样的人？"></a>2.招什么样的人？</h3><p>招优秀的人显然是一个很模糊的概念，我们来度量的时候，我个人认为三个因素是最关键的：</p>
+<h4 id="a-技能"><a href="#a-技能" class="headerlink" title="a.技能"></a>a.技能</h4><p>工作项目经验，以及解决疑难问题的能力，毕竟招来的人首先必须很好的完成工作，这是最基本的要求，注意，是很好的完成，不是仅仅完成。</p>
+<h4 id="b-潜力"><a href="#b-潜力" class="headerlink" title="b.潜力"></a>b.潜力</h4><p>这个概念看起来比较模糊，其实还是比较容易评价的，对计算机相关的专业的知识体系是不是完整，基础是不是扎实，平常是不是喜欢钻研，对这个世界充满好奇心，这几年走下来，沉淀的速度如何，都是判断一个人的潜力的方式，注意我们看潜力主要是基于候选人的之前的成长经历实事求是来看，过去的优秀经历才能给未来背书。潜力和技能的重要性一样重要，我们不能只看眼前，团队是需要不断发展和前进的，所以我们招人应该面向未来。</p>
+<h4 id="c-软实力"><a href="#c-软实力" class="headerlink" title="c.软实力"></a>c.软实力</h4><p>软实力这里其实包含了性格，执行力，领导力等方方面面，它代表了候选人是否能快速融入团队，拿到结果，带领团队攻城拔寨，激励和影响身边的人变得更加优秀等等，软实力一般HR肯定会考察，虽然技术面不会特别去关注，但是从面试的过程中可以看出候选人的沟通能力，以及性格相关的特点，也值得我们注意。</p>
+<p>说了这么多，其实在招人上有一个对比的标杆，就是你招的人是不是比团队中同一等级中50%的同学优秀，如果你觉得没有他们优秀，那不用纠结，这个候选人不要了，团队必须不停加入更好的同学，才能变得更加强大。</p>
+<h3 id="3-面试的方法"><a href="#3-面试的方法" class="headerlink" title="3.面试的方法"></a>3.面试的方法</h3><p>这里结合之前的培训以及自己的真实经历，讲解面试的一些方法。</p>
+<h4 id="a-面试不要做的事"><a href="#a-面试不要做的事" class="headerlink" title="a.面试不要做的事"></a>a.面试不要做的事</h4><h6 id="问一些知道性的问题比如问知不知道这个API干什么的，怎么调用，这个命令怎么用的，知道性的知识，google一下或者认真看下文档就应该知道。"><a href="#问一些知道性的问题比如问知不知道这个API干什么的，怎么调用，这个命令怎么用的，知道性的知识，google一下或者认真看下文档就应该知道。" class="headerlink" title="问一些知道性的问题比如问知不知道这个API干什么的，怎么调用，这个命令怎么用的，知道性的知识，google一下或者认真看下文档就应该知道。"></a>问一些知道性的问题比如问知不知道这个API干什么的，怎么调用，这个命令怎么用的，知道性的知识，google一下或者认真看下文档就应该知道。</h6><h6 id="问一些特别复杂的问题比如问一个特别复杂的算法，问一个很抽象的大问题，短时间内很难给予回答。"><a href="#问一些特别复杂的问题比如问一个特别复杂的算法，问一个很抽象的大问题，短时间内很难给予回答。" class="headerlink" title="问一些特别复杂的问题比如问一个特别复杂的算法，问一个很抽象的大问题，短时间内很难给予回答。"></a>问一些特别复杂的问题比如问一个特别复杂的算法，问一个很抽象的大问题，短时间内很难给予回答。</h6><h6 id="问一些假设性的问题假设你参与了这个项目，你觉得哪几个地方需要优化。"><a href="#问一些假设性的问题假设你参与了这个项目，你觉得哪几个地方需要优化。" class="headerlink" title="问一些假设性的问题假设你参与了这个项目，你觉得哪几个地方需要优化。"></a>问一些假设性的问题假设你参与了这个项目，你觉得哪几个地方需要优化。</h6><p>之所以说这些问题不应该问，我认为主要是因为这些很难考察到面试者的真实能力，45分钟的时间本来就很短，有些问题有可能比较偏，有些问题又过于庞大没法一下子描述特别清楚，还有一些问题缺乏上下文，让人摸不到头脑，所以尽量避免这么问问题，另外把握一个重要原则，不要在面试中试图证明别人不如自己，毫无意义，人无完人，总有覆盖不到的地方，按照这个规则招聘，会错过很多优秀的人才。</p>
+<h4 id="b-面试应该做的事"><a href="#b-面试应该做的事" class="headerlink" title="b.面试应该做的事"></a>b.面试应该做的事</h4><h6 id="问已经发生的事情"><a href="#问已经发生的事情" class="headerlink" title="问已经发生的事情"></a>问已经发生的事情</h6><p>比如面试移动开发者，面试官应该认真看下其做过的App，具体的工作是什么，准备一些相关的问题，这里就可以看出来之前工作中的积累是什么，有多深。</p>
+<h6 id="问题解决思路"><a href="#问题解决思路" class="headerlink" title="问题解决思路"></a>问题解决思路</h6><p>针对项目经验和一些学习的经验上面，应该问拿到问题以后解决思路是什么，在什么场景下为什么这么做，这里根据面试者的方案，分析的方法论，就可以大致了解面试者是否聪明，知识面是不是够广，遇到问题时会不会举一反三。</p>
+<p>具体可以举个简单的例子，很多同学说自己做过架构，然后都会讲自己做了一个解耦和分层的框架，其实这类框架iOS很多，外部github上就有各种方案。在阿里内部手淘早先做的bundle拆分时沉淀的容器规则，天猫开源出去的beeHive，闲鱼内部的Xframework，抑或是服务端的spring mvc，其实都实现了IoC，但实现和思路上都有一些差异，到底为什么这么做，其实是有区别的，这里面就可以看出知识广度，总结和思辩能力，在关键路径上的技术判断。</p>
+<p>又比如说，我们总在强调性能稳定性怎么做，业界也有很多方案，到底哪个方案更好呢？答案没有绝对的对错，取决于某个时间点和场景下哪个问题是最核心的突破点，而你的选择标准和落地的技术方案是不是合理（考虑成本，收益，以及后续的风险是什么）。一般来讲，我们更倾向于用系统化的思维看待一个问题，也就是说，相比根据人的经验去识别性能瓶颈，我们更希望能通过自动化，智能化，数据化的方式去解决问题。</p>
+<h4 id="c-少问多听"><a href="#c-少问多听" class="headerlink" title="c.少问多听"></a>c.少问多听</h4><p>一般刚开始做面试官的同学很喜欢以问为主，但因为大家的知识体系不太一样，成长环境也不同，直接这么问起来很难就找到面试者的优点，所以尽量让应试者自己陈述，然后以学习和交流的心态针对陈述中存疑的地方再进行发问，会更容易让应试者放松，也更容易让应试者更全面的表达自己。另外，问的差不多的时候，结尾的时候可以补充一句：您觉得刚才的面试中还有哪些我没问到的，您想再补充一下的内容？末了，再问下：我的问题问完了，您有什么想要问我的吗？</p>
+<p>知道了应该怎么做，那具体的提问方法有没有什么技巧呢？在招聘中有一个重要的STAR原则，可以跟大家分享。</p>
+<h3 id="4-STAR原则"><a href="#4-STAR原则" class="headerlink" title="4.STAR原则"></a>4.STAR原则</h3><h6 id="处境-situation"><a href="#处境-situation" class="headerlink" title="处境(situation)"></a>处境(situation)</h6><p>在什么样的环境下</p>
+<h6 id="任务-task"><a href="#任务-task" class="headerlink" title="任务(task)"></a>任务(task)</h6><p>接到了什么样的任务</p>
+<h6 id="行动-action"><a href="#行动-action" class="headerlink" title="行动(action)"></a>行动(action)</h6><p>然后具体怎么落地的</p>
+<h6 id="结果-result"><a href="#结果-result" class="headerlink" title="结果(result)"></a>结果(result)</h6><p>拿到了什么结果</p>
+<p>我们尽量问清楚对方在什么样的环境下接到这个任务，接到以后是做了什么事情，最后的结果是什么样子的。乍一听，感觉，这不是套路嘛，是不是知道这个原则的人，只要按照这四点编故事，就能通过面试了？当然不是，在叙述过程中，我们应该分辨出STAR中的真假，那下面就举一些例子。</p>
+<h3 id="5-假的STAR"><a href="#5-假的STAR" class="headerlink" title="5.假的STAR"></a>5.假的STAR</h3><h6 id="描述含糊不清"><a href="#描述含糊不清" class="headerlink" title="描述含糊不清"></a>描述含糊不清</h6><p>比如，我用这个方案解决了这个问题，效果很好，得到了大家的一致好评。注意，效果好是哪里好，有什么度量的标准？一致好评的体现是在具体KPI还是比如团队有个什么奖励之类的。</p>
+<h6 id="只表达态度和看法"><a href="#只表达态度和看法" class="headerlink" title="只表达态度和看法"></a>只表达态度和看法</h6><p>我觉得线上稳定性非常重要，应该重点解决和持续跟进。如果只有这一句话，没有后面具体认为重要的解决方案的话，这部分的经验难以令人信服。</p>
+<h6 id="假设式描述"><a href="#假设式描述" class="headerlink" title="假设式描述"></a>假设式描述</h6><p>如果我来做这件事情，我会1234怎么怎么样。前面其实面试应该问的问题里面有提到，我们本身就不应该问假设性的问题，那作为面试者，假设没做过的事情，如果只是看思路还好，但是如果说的天花乱坠，这个时候要警惕了，毕竟说和做之前的差异是很大的。对于假设的事情，面试官是没法评估具体效果的，因为它不像过去已有的项目和工作内容，是有明显结果的，如果对过去结果存疑，后续也可以背调了解具体的情况。</p>
+<p>针对假的STAR，我们要甄别分辨出来，引导其表达出真正的情况。</p>
+<h3 id="6-鉴别方式"><a href="#6-鉴别方式" class="headerlink" title="6.鉴别方式"></a>6.鉴别方式</h3><h6 id="更多的关心What-How-Why"><a href="#更多的关心What-How-Why" class="headerlink" title="更多的关心What/How/Why"></a>更多的关心What/How/Why</h6><p>做了什么事情，具体做的方案1234几步，为什么要这么做，比如图片的优化，最早肯定什么都没有，后续加cache，cache策略又可以升级，包括cache本身的算法以及多级cache的实现，图片尺寸上面后来有做了什么裁切之类的，图片格式上面后续又做了优化等等。</p>
+<p>每个阶段不太一样，关注的重点也不一样，刨根问题问一问，会了解是不是真的做过这件事情，另外有一些可能项目做得很久说很多东西忘了，这里我分享一个观点，之前看过一句话，招聘的人中有一种人是比较好的，他总能比较清楚的记住过往项目当中的重点，这样的人在经验沉淀的过程中肯定更快一些，当然这样的同学肯定得归结在聪明一类的人了，当然能记住也说明他可能喜欢总结和回顾，平常的学习习惯应该也比较好。</p>
+<h6 id="细节！细节！细节！"><a href="#细节！细节！细节！" class="headerlink" title="细节！细节！细节！"></a>细节！细节！细节！</h6><p>很多关键节点的细节很重要，比如网络库的优化。如果你是一个iOS开发，一般都会知道iOS的网络协议优化常采用拦截NSURLProtocol的方式进行，然后针对传统的https协议我们会将其替换成为spdy协议或者http2协议，过程中还有一些httpdns等的优化。但如果你今天希望招聘一个有这部分网络优化经验的同学，怎么判断这个同学有实操的经验呢？你可以让他说细节上面的很多事情，比如说URLProtocol拦截request以后，针对不同的case的降级策略是什么，选择依据是什么？当时遇到了什么其他的坑没有？你自己的做法有什么缺陷？</p>
+<p>又比如Weex的实现上面，整个渲染的流程到底是怎样的，渲染部分还有什么优化空间吗？或者说这个方案本身做了哪方面的优化？它的配套工程体系上的问题是什么，你遇到以后是怎么解决掉的，这些在了解大概思路后，都可以往深入再问一下细节的部分，认真研读以及修改过代码的同学，肯定是答得出来的。</p>
+<h3 id="7-其他Tips"><a href="#7-其他Tips" class="headerlink" title="7.其他Tips"></a>7.其他Tips</h3><h6 id="你在面试别人，别人也在选择你"><a href="#你在面试别人，别人也在选择你" class="headerlink" title="你在面试别人，别人也在选择你"></a>你在面试别人，别人也在选择你</h6><p>面试是双向的，面试官是一个团队对外的门面，不要迟到，提问和交流要尊重面试者，让面试者感受到我们的真诚。</p>
+<h6 id="为未来招聘而不是现在"><a href="#为未来招聘而不是现在" class="headerlink" title="为未来招聘而不是现在"></a>为未来招聘而不是现在</h6><p>我们永远应该为未来招聘，因为招聘的人入职也是发生在未来，不能立刻就解决你眼前的问题，所以我们招聘的时候也放长远一点，招为团队未来更有好处的人。</p>
+<h6 id="面试是一面镜子"><a href="#面试是一面镜子" class="headerlink" title="面试是一面镜子"></a>面试是一面镜子</h6><p>以人为镜，优秀的面试者给我们能带来新的思路和新的方法，而差强人意的面试者则提高我们看人的能力，为后续的提升招聘效率找到更正确的人打下基础。</p>
+<h3 id="8-技术人如何不断成长？"><a href="#8-技术人如何不断成长？" class="headerlink" title="8.技术人如何不断成长？"></a>8.技术人如何不断成长？</h3><p>招聘，培训，人才选拔晋升，我认为评价标准和方法都应该有比较多的重合的部分，我们从刚才的面试经验中，反思下，如果现在是我们去找工作，这个市场或者团队更需要什么样的人？</p>
+<h6 id="经验丰富，知识体系完整"><a href="#经验丰富，知识体系完整" class="headerlink" title="经验丰富，知识体系完整"></a>经验丰富，知识体系完整</h6><p>经验能解决实际的问题，另外知识体系可以让你在遇到新的问题时举一反三，当然大公司和小公司要求的知识体系又不太一样，大公司更偏向一专多能的T型人才，小公司更喜欢全栈，所以到底要成为什么样的人，跟你的职业规划很有关系，是想在大公司成就一番事业，还是出去闯荡，那你点的技能树肯定是不一样的。到底应该怎么做，我自己的经验是，找到身边的标杆，向更优秀的同学学习，在阿里当然非常优秀的专业人才也好，架构师也好，都非常多，所以标杆应该也好找，业界当然也有很多成功的人，有了标杆，就努力向上吧。</p>
+<h6 id="保持良好的习惯，不忘总结和提升"><a href="#保持良好的习惯，不忘总结和提升" class="headerlink" title="保持良好的习惯，不忘总结和提升"></a>保持良好的习惯，不忘总结和提升</h6><p>当我还是一个菜鸟的时候，当时的老板问了我一个问题，每周写周报的时候，想想自己这一周到底收获了什么，这给我留下了很深的印象。我在想，既然我每次面试别人都问你最近有研究什么新的技术或者看到什么有趣的文章没有的，那我自己是不是能这样要求自己呢？不积跬步无以至千里，贵在坚持积累。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/24/sql/optimization/" rel="next" title="MySQL性能优化之参数配置">
+                <i class="fa fa-chevron-left"></i> MySQL性能优化之参数配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="sir051223" />
+          <p class="site-author-name" itemprop="name">sir051223</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#阿里技术面试的思路"><span class="nav-number">1.</span> <span class="nav-text">阿里技术面试的思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-招聘的目的"><span class="nav-number">2.</span> <span class="nav-text">1.招聘的目的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-招什么样的人？"><span class="nav-number">3.</span> <span class="nav-text">2.招什么样的人？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-技能"><span class="nav-number">3.1.</span> <span class="nav-text">a.技能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-潜力"><span class="nav-number">3.2.</span> <span class="nav-text">b.潜力</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#c-软实力"><span class="nav-number">3.3.</span> <span class="nav-text">c.软实力</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-面试的方法"><span class="nav-number">4.</span> <span class="nav-text">3.面试的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-面试不要做的事"><span class="nav-number">4.1.</span> <span class="nav-text">a.面试不要做的事</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#问一些知道性的问题比如问知不知道这个API干什么的，怎么调用，这个命令怎么用的，知道性的知识，google一下或者认真看下文档就应该知道。"><span class="nav-number">4.1.0.1.</span> <span class="nav-text">问一些知道性的问题比如问知不知道这个API干什么的，怎么调用，这个命令怎么用的，知道性的知识，google一下或者认真看下文档就应该知道。</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#问一些特别复杂的问题比如问一个特别复杂的算法，问一个很抽象的大问题，短时间内很难给予回答。"><span class="nav-number">4.1.0.2.</span> <span class="nav-text">问一些特别复杂的问题比如问一个特别复杂的算法，问一个很抽象的大问题，短时间内很难给予回答。</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#问一些假设性的问题假设你参与了这个项目，你觉得哪几个地方需要优化。"><span class="nav-number">4.1.0.3.</span> <span class="nav-text">问一些假设性的问题假设你参与了这个项目，你觉得哪几个地方需要优化。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-面试应该做的事"><span class="nav-number">4.2.</span> <span class="nav-text">b.面试应该做的事</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#问已经发生的事情"><span class="nav-number">4.2.0.1.</span> <span class="nav-text">问已经发生的事情</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#问题解决思路"><span class="nav-number">4.2.0.2.</span> <span class="nav-text">问题解决思路</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#c-少问多听"><span class="nav-number">4.3.</span> <span class="nav-text">c.少问多听</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-STAR原则"><span class="nav-number">5.</span> <span class="nav-text">4.STAR原则</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#处境-situation"><span class="nav-number">5.0.0.1.</span> <span class="nav-text">处境(situation)</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#任务-task"><span class="nav-number">5.0.0.2.</span> <span class="nav-text">任务(task)</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#行动-action"><span class="nav-number">5.0.0.3.</span> <span class="nav-text">行动(action)</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#结果-result"><span class="nav-number">5.0.0.4.</span> <span class="nav-text">结果(result)</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-假的STAR"><span class="nav-number">6.</span> <span class="nav-text">5.假的STAR</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#描述含糊不清"><span class="nav-number">6.0.0.1.</span> <span class="nav-text">描述含糊不清</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#只表达态度和看法"><span class="nav-number">6.0.0.2.</span> <span class="nav-text">只表达态度和看法</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#假设式描述"><span class="nav-number">6.0.0.3.</span> <span class="nav-text">假设式描述</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-鉴别方式"><span class="nav-number">7.</span> <span class="nav-text">6.鉴别方式</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#更多的关心What-How-Why"><span class="nav-number">7.0.0.1.</span> <span class="nav-text">更多的关心What/How/Why</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#细节！细节！细节！"><span class="nav-number">7.0.0.2.</span> <span class="nav-text">细节！细节！细节！</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-其他Tips"><span class="nav-number">8.</span> <span class="nav-text">7.其他Tips</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#你在面试别人，别人也在选择你"><span class="nav-number">8.0.0.1.</span> <span class="nav-text">你在面试别人，别人也在选择你</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#为未来招聘而不是现在"><span class="nav-number">8.0.0.2.</span> <span class="nav-text">为未来招聘而不是现在</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#面试是一面镜子"><span class="nav-number">8.0.0.3.</span> <span class="nav-text">面试是一面镜子</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-技术人如何不断成长？"><span class="nav-number">9.</span> <span class="nav-text">8.技术人如何不断成长？</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#经验丰富，知识体系完整"><span class="nav-number">9.0.0.1.</span> <span class="nav-text">经验丰富，知识体系完整</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#保持良好的习惯，不忘总结和提升"><span class="nav-number">9.0.0.2.</span> <span class="nav-text">保持良好的习惯，不忘总结和提升</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sir051223</span>
+
+  
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

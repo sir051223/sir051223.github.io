@@ -263,6 +263,440 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/10/php/getClientIp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/10/php/getClientIp/" itemprop="url">php如何获取ip地址</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-10T12:29:47+08:00">
+                2018-08-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Php/" itemprop="url" rel="index">
+                    <span itemprop="name">Php</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="一、如果没有使用代理服务器"><a href="#一、如果没有使用代理服务器" class="headerlink" title="一、如果没有使用代理服务器"></a>一、如果没有使用代理服务器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">REMOTE_ADDR = 客户端IP    HTTP_X_FORWARDED_FOR = 没数值或不显示</div><div class="line"></div><div class="line">&lt;?php   </div><div class="line"></div><div class="line"><span class="variable">$ip</span> = <span class="variable">$_SERVER</span>[<span class="string">'REMOTE_ADDR'</span>];</div><div class="line"><span class="built_in">echo</span> <span class="variable">$ip</span>;</div></pre></td></tr></table></figure>
+<h3 id="二、使用透明代理"><a href="#二、使用透明代理" class="headerlink" title="二、使用透明代理"></a>二、使用透明代理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">REMOTE_ADDR = 最后一个代理服务器 IP</div><div class="line"></div><div class="line">HTTP_X_FORWARDED_FOR = 客户端真实 IP （经过多个代理服务器时，这个值类似：221.5.252.160， 203.98.182.13， 203.129.72.25）</div><div class="line"></div><div class="line">这类代理还会将客户真实ip发送到请求对象，无法隐藏真实ip。</div><div class="line"></div><div class="line">&lt;?php   </div><div class="line"></div><div class="line">　<span class="variable">$ip</span> = <span class="variable">$_SERVER</span>[<span class="string">'HTTP_X_FORWARDED_FOR'</span>];</div><div class="line">  <span class="built_in">echo</span> <span class="variable">$ip</span>;</div></pre></td></tr></table></figure>
+<h3 id="三、使用普通匿名代理服务器"><a href="#三、使用普通匿名代理服务器" class="headerlink" title="三、使用普通匿名代理服务器"></a>三、使用普通匿名代理服务器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">REMOTE_ADDR = 最后一个代理服务器 IP</div><div class="line"></div><div class="line">HTTP_X_FORWARDED_FOR = 代理服务器 IP （经过多个代理服务器时，这个值类似：203.98.182.163， 203.98.182.13， 203.129.72.25）</div><div class="line"></div><div class="line">这样就隐藏了客户端的真实ip，但服务器会知道客户端是通过代理服务器去访问的。</div></pre></td></tr></table></figure>
+<h3 id="四、使用欺骗性代理服务器"><a href="#四、使用欺骗性代理服务器" class="headerlink" title="四、使用欺骗性代理服务器"></a>四、使用欺骗性代理服务器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">EMOTE_ADDR = 代理服务器 IP</div><div class="line"></div><div class="line">HTTP_X_FORWARDED_FOR = 随机的 IP（经过多个代理服务器时，这个值类似：220.4.251.159， 203.98.182.13， 203.129.72.25）</div><div class="line"></div><div class="line">服务器可以识别到时通过代理服务器访问的，但发送给目标服务器的是虚假ip。</div></pre></td></tr></table></figure>
+<h3 id="五、使用高匿名代理"><a href="#五、使用高匿名代理" class="headerlink" title="五、使用高匿名代理"></a>五、使用高匿名代理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">REMOTE_ADDR = 代理服务器 IP       HTTP_X_FORWARDED_FOR = 没数值或不显示</div><div class="line"></div><div class="line">使用这种代理时，不同浏览器不同设备会返回不同的ip头信息，因此PHP使用<span class="variable">$_SERVER</span>[<span class="string">"REMOTE_ADDR"</span>] 、<span class="variable">$_SERVER</span>[<span class="string">"HTTP_X_FORWARDED_FOR"</span>] 获取的值可能是空值也可能是“unknown”值。</div></pre></td></tr></table></figure>
+<h3 id="六、PHP获取ip代码如下"><a href="#六、PHP获取ip代码如下" class="headerlink" title="六、PHP获取ip代码如下"></a>六、PHP获取ip代码如下</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * 获取客户端IP地址</div><div class="line"> * @<span class="built_in">return</span> mixed</div><div class="line"> */</div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">getClientIp</span></span>() </div><div class="line">&#123;</div><div class="line">    <span class="variable">$ip</span> = <span class="string">""</span>;</div><div class="line">    <span class="keyword">if</span> (getenv(<span class="string">'HTTP_CLIENT_IP'</span>) &amp;&amp; strcasecmp(getenv(<span class="string">'HTTP_CLIENT_IP'</span>), <span class="string">'unknown'</span>)) &#123;</div><div class="line">        <span class="variable">$ip</span> = getenv(<span class="string">'HTTP_CLIENT_IP'</span>);</div><div class="line">    &#125; elseif (getenv(<span class="string">'HTTP_X_FORWARDED_FOR'</span>) &amp;&amp; strcasecmp(getenv(<span class="string">'HTTP_X_FORWARDED_FOR'</span>), <span class="string">'unknown'</span>)) &#123;</div><div class="line">        <span class="variable">$ip</span> = getenv(<span class="string">'HTTP_X_FORWARDED_FOR'</span>);</div><div class="line">    &#125; elseif (getenv(<span class="string">'REMOTE_ADDR'</span>) &amp;&amp; strcasecmp(getenv(<span class="string">'REMOTE_ADDR'</span>), <span class="string">'unknown'</span>)) &#123;</div><div class="line">        <span class="variable">$ip</span> = getenv(<span class="string">'REMOTE_ADDR'</span>);</div><div class="line">    &#125; elseif (isset(<span class="variable">$_SERVER</span>[<span class="string">'REMOTE_ADDR'</span>]) &amp;&amp; <span class="variable">$_SERVER</span>[<span class="string">'REMOTE_ADDR'</span>] &amp;&amp; strcasecmp(<span class="variable">$_SERVER</span>[<span class="string">'REMOTE_ADDR'</span>], <span class="string">'unknown'</span>)) &#123;</div><div class="line">        <span class="variable">$ip</span> = <span class="variable">$_SERVER</span>[<span class="string">'REMOTE_ADDR'</span>];</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">return</span> <span class="variable">$ip</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/10/php/mapapi/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/10/php/mapapi/" itemprop="url">获取地理位置信息的接口</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-10T12:13:47+08:00">
+                2018-08-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Php/" itemprop="url" rel="index">
+                    <span itemprop="name">Php</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="一、通过ip获取地理位置信息"><a href="#一、通过ip获取地理位置信息" class="headerlink" title="一、通过ip获取地理位置信息"></a>一、通过ip获取地理位置信息</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">淘宝接口 -- http://ip.taobao.com/service/getIpInfo.php?ip=<span class="variable">$ip</span>  (8-17已无法访问)</div><div class="line"></div><div class="line">新浪接口 -- http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&amp;ip=<span class="variable">$ip</span>  (已无法访问)</div><div class="line"></div><div class="line">qq接口   -- http://ip.qq.com/cgi-bin/searchip?searchip1=<span class="variable">$ip</span>  (已无法访问)</div><div class="line"></div><div class="line">百度地图ip定位 -- https://api.map.baidu.com/location/ip?ak=yourkey&amp;ip=<span class="string">'.$ip  每天调用上限100w</span></div><div class="line"></div><div class="line">高德地图ip定位 -- https://restapi.amap.com/v3/ip?parameters （详细文档：https://lbs.amap.com/api/webservice/guide/api/ipconfig/） 每天调用上限10w</div><div class="line"></div><div class="line">收费接口  --  ip138.cn</div><div class="line"></div><div class="line">php如何获取ip地址，见下一篇文章《php如何获取ip地址》</div></pre></td></tr></table></figure>
+<h3 id="二、通过经纬度获取地理位置信息"><a href="#二、通过经纬度获取地理位置信息" class="headerlink" title="二、通过经纬度获取地理位置信息"></a>二、通过经纬度获取地理位置信息</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">1、google -- http://maps.google.cn/maps/api/geocode/json?latlng=22.6545715201,108.4130859375&amp;sensor=<span class="literal">true</span></div><div class="line"></div><div class="line">2、baidu  -- http://api.map.baidu.com/geocoder?output=json&amp;location=39.913542,116.379763&amp;ak=esNPFDwwsXWtsQfw4NMNmur1</div><div class="line"></div><div class="line">3、微信小程序版百度 -- http://lbsyun.baidu.com/index.php?title=wxjsapi/guide/getlocation</div></pre></td></tr></table></figure>
+<h3 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">一、获取地理位置信息有时耗时比较大，最好不要用在主进程，如果时效性要求不高，建议异步获取。</div><div class="line"></div><div class="line">二、这些接口并不稳定，指不定什么时候就不能访问了，建议规划好备用方案</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/25/sql/changepwd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/25/sql/changepwd/" itemprop="url">修改mysql数据库的密码</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-25T16:45:47+08:00">
+                2018-06-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Sql/" itemprop="url" rel="index">
+                    <span itemprop="name">Sql</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="一、用SET-PASSWORD命令"><a href="#一、用SET-PASSWORD命令" class="headerlink" title="一、用SET PASSWORD命令"></a>一、用SET PASSWORD命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">首先登录MySQL</div><div class="line"></div><div class="line">格式：mysql&gt; <span class="built_in">set</span> password <span class="keyword">for</span> 用户名@localhost = password(<span class="string">'新密码'</span>);  </div><div class="line"></div><div class="line">例子：mysql&gt; <span class="built_in">set</span> password <span class="keyword">for</span> root@localhost = password(<span class="string">'123'</span>);</div></pre></td></tr></table></figure>
+<h3 id="二、用mysqladmin"><a href="#二、用mysqladmin" class="headerlink" title="二、用mysqladmin"></a>二、用mysqladmin</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">格式：mysqladmin -u用户名 -p旧密码 password 新密码  </div><div class="line"></div><div class="line">例子：mysqladmin -uroot -p123456 password 123</div></pre></td></tr></table></figure>
+<h3 id="三、用UPDATE直接编辑user表"><a href="#三、用UPDATE直接编辑user表" class="headerlink" title="三、用UPDATE直接编辑user表"></a>三、用UPDATE直接编辑user表</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">首先登录MySQL。  </div><div class="line"></div><div class="line">mysql&gt; use mysql;  </div><div class="line"></div><div class="line">mysql&gt; update user <span class="built_in">set</span> password=password(<span class="string">'123'</span>) <span class="built_in">where</span> user=<span class="string">'root'</span> and host=<span class="string">'localhost'</span>;  </div><div class="line"></div><div class="line">mysql&gt; flush privileges;</div></pre></td></tr></table></figure>
+<h3 id="五、忘记root密码"><a href="#五、忘记root密码" class="headerlink" title="五、忘记root密码"></a>五、忘记root密码</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">1．修改MySQL的登录设置：</div><div class="line">在[mysqld]的段中加上一句：skip-grant-tables </div><div class="line"></div><div class="line">	vi /etc/my.cnf</div><div class="line"></div><div class="line">	[mysqld] </div><div class="line">	datadir=/var/lib/mysql </div><div class="line">	socket=/var/lib/mysql/mysql.sock </div><div class="line">	skip-grant-tables</div><div class="line"> </div><div class="line">2. 重启服务</div><div class="line">service mysql restart</div><div class="line"></div><div class="line">3. 修改 root 密码</div><div class="line"></div><div class="line">mysql -u root -p</div><div class="line"></div><div class="line">mysql&gt; USE mysql;</div><div class="line">mysql&gt; UPDATE user SET Password = password(<span class="string">'123456'</span>) WHERE User = <span class="string">'root'</span>;</div><div class="line">mysql&gt; flush privileges;</div><div class="line">mysql&gt; quit;</div><div class="line"></div><div class="line">4. 删除刚刚新增加的 skip-grant-tables </div><div class="line"></div><div class="line">vi /etc/my.cnf</div><div class="line"></div><div class="line">5. 重启服务</div><div class="line">service mysql restart</div><div class="line"></div><div class="line"></div><div class="line">mysql -u root -p</div><div class="line"></div><div class="line">SET PASSWORD = PASSWORD(<span class="string">'whatyoulike'</span>);</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/21/php/soap/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1274,440 +1708,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/17/love/trust/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sir051223">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Forest">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/17/love/trust/" itemprop="url">相信憧憬</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-17T17:31:27+08:00">
-                2017-08-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/爱情/" itemprop="url" rel="index">
-                    <span itemprop="name">爱情</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="电影《美丽心灵》"><a href="#电影《美丽心灵》" class="headerlink" title="电影《美丽心灵》"></a>电影《美丽心灵》</h3><p>电影《美丽心灵》中的一段对话，男主向女主求婚，女主问男主为何向她求婚，男主是典型理工男，答不出来，于是有了以下对话</p>
-<h3 id="原文"><a href="#原文" class="headerlink" title="原文"></a>原文</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">Alicia: How big is the universe? </div><div class="line"></div><div class="line">Nash: Infinite. </div><div class="line"></div><div class="line">Alicia: How <span class="keyword">do</span> you know? </div><div class="line"></div><div class="line">Nash: I know because all the data indicates it<span class="string">'s infinite. </span></div><div class="line"></div><div class="line">Alicia: But it hasn't been proven yet. </div><div class="line"></div><div class="line">Nash: No. </div><div class="line"></div><div class="line">Alicia: You haven<span class="string">'t seen it. </span></div><div class="line"></div><div class="line">Nash: No. </div><div class="line"></div><div class="line">Alicia: How do you know for sure? </div><div class="line"></div><div class="line">Nash: I don't, I just believe it. </div><div class="line"></div><div class="line">Alicia: It<span class="string">'s the same with love I guess.</span></div></pre></td></tr></table></figure>
-<h3 id="中文对照"><a href="#中文对照" class="headerlink" title="中文对照"></a>中文对照</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">Alicia: 那你说宇宙有多大？  </div><div class="line"></div><div class="line">Nash: 无限大。 </div><div class="line"></div><div class="line">Alicia: 你怎么知道？</div><div class="line"></div><div class="line">Nash: 我知道是因为所有的资料都这样显示。 </div><div class="line"></div><div class="line">Alicia: 但是还没有被证明，对吗？  </div><div class="line"></div><div class="line">Nash: 没错。</div><div class="line"></div><div class="line">Alicia: 你还没见过。 </div><div class="line"></div><div class="line">Nash: 没错。</div><div class="line"></div><div class="line">Alicia: 你怎么能肯定呢？ </div><div class="line"></div><div class="line">Nash: 我不能肯定，我只是相信。 </div><div class="line"></div><div class="line">Alicia: 嗯。我猜这跟爱也一样。</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/16/linux/collect/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sir051223">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Forest">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/16/linux/collect/" itemprop="url">好资源收藏</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-16T12:33:31+08:00">
-                2017-08-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="I-LIKE"><a href="#I-LIKE" class="headerlink" title="I LIKE"></a>I LIKE</h2><h3 id="工作–code"><a href="#工作–code" class="headerlink" title="工作–code"></a>工作–code</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">https://github.com/ksky521/nodeppt    PPT制作</div><div class="line"></div><div class="line">https://github.com/geekcompany/ResumeSample/blob/master/php.md    技术简历</div><div class="line"></div><div class="line">https://github.com/geekcompany/DeerResume    Markdown简历神器</div></pre></td></tr></table></figure>
-<h3 id="管理"><a href="#管理" class="headerlink" title="管理"></a>管理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.sohu.com/</div></pre></td></tr></table></figure>
-<h3 id="开发"><a href="#开发" class="headerlink" title="开发"></a>开发</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://www.swoole.com/    swoole</div></pre></td></tr></table></figure>
-<h3 id="文学"><a href="#文学" class="headerlink" title="文学"></a>文学</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.ustc.edu.cn/</div></pre></td></tr></table></figure>
-<h3 id="未完待续"><a href="#未完待续" class="headerlink" title="未完待续"></a>未完待续</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.aliyun.com/</div></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/16/linux/mirrors/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sir051223">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Forest">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/16/linux/mirrors/" itemprop="url">mirrors镜像资源</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-16T12:33:31+08:00">
-                2017-08-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="国内部分开源镜像站点汇总"><a href="#国内部分开源镜像站点汇总" class="headerlink" title="国内部分开源镜像站点汇总"></a>国内部分开源镜像站点汇总</h2><h3 id="网易开源镜像资源"><a href="#网易开源镜像资源" class="headerlink" title="网易开源镜像资源"></a>网易开源镜像资源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.163.com/</div></pre></td></tr></table></figure>
-<h3 id="搜狐开源镜像资源"><a href="#搜狐开源镜像资源" class="headerlink" title="搜狐开源镜像资源"></a>搜狐开源镜像资源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.sohu.com/</div></pre></td></tr></table></figure>
-<h3 id="清华大学开源镜像资源"><a href="#清华大学开源镜像资源" class="headerlink" title="清华大学开源镜像资源"></a>清华大学开源镜像资源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.cnnic.cn</div></pre></td></tr></table></figure>
-<h3 id="科大开源镜像资源"><a href="#科大开源镜像资源" class="headerlink" title="科大开源镜像资源"></a>科大开源镜像资源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.ustc.edu.cn/</div></pre></td></tr></table></figure>
-<h3 id="阿里云开源镜像资源"><a href="#阿里云开源镜像资源" class="headerlink" title="阿里云开源镜像资源"></a>阿里云开源镜像资源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://mirrors.aliyun.com/</div></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1758,7 +1758,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">25</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
