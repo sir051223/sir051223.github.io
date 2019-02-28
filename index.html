@@ -263,6 +263,295 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/28/php/getMac/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/28/php/getMac/" itemprop="url">php通过ARP地址解析协议获取用户设备的mac地址</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-28T14:52:54+08:00">
+                2019-02-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Php/" itemprop="url" rel="index">
+                    <span itemprop="name">Php</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="一、ARP地址解析协议"><a href="#一、ARP地址解析协议" class="headerlink" title="一、ARP地址解析协议"></a>一、ARP地址解析协议</h3><p>ARP的功能是在32bit的ip地址和采用不同网络技术的硬件地址之间提供动态映射。<br>ARP高速运行的关键是由于每个主机上都有一个ARP高速缓存，这个高速缓存存放了最近Internet地址到硬件地址之间的映射记录。<br>可以在linux中通过命令arp -a查看，参数-a的意思是显示高速缓存中所有的内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">  <span class="comment"># arp -a</span></div><div class="line">? (192.168.31.53) at f4:60:e2:a7:f7:60 [ether] on enp4s0</div><div class="line">? (192.168.31.109) at 94:bf:2d:52:42:34 [ether] on enp4s0</div><div class="line">gateway (192.168.31.1) at 84:5b:12:4b:14:41 [ether] on enp4s0</div><div class="line">? (192.168.31.152) at 3c:52:82:67:8d:b9 [ether] on enp4s0</div><div class="line">  </div><div class="line">  这里列举了最近20分钟访问的ip及ip对应的mac地址</div></pre></td></tr></table></figure>
+<h3 id="二、php代码实现"><a href="#二、php代码实现" class="headerlink" title="二、php代码实现"></a>二、php代码实现</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">&lt;?php  </div><div class="line"></div><div class="line">/**</div><div class="line"> * 获取客户端IP地址</div><div class="line"> * @param <span class="built_in">integer</span> <span class="variable">$type</span> 返回类型 0 返回IP地址 1 返回IPV4地址数字</div><div class="line"> * @<span class="built_in">return</span> mixed</div><div class="line"> */</div><div class="line"><span class="keyword">function</span> getClientIp(<span class="variable">$type</span> = 0) </div><div class="line">&#123;</div><div class="line">    <span class="variable">$ip</span> = <span class="string">""</span>;</div><div class="line">    <span class="keyword">if</span> (getenv(<span class="string">'HTTP_CLIENT_IP'</span>) &amp;&amp; strcasecmp(getenv(<span class="string">'HTTP_CLIENT_IP'</span>), <span class="string">'unknown'</span>)) &#123;</div><div class="line">        <span class="variable">$ip</span> = getenv(<span class="string">'HTTP_CLIENT_IP'</span>);</div><div class="line">    &#125; elseif (getenv(<span class="string">'HTTP_X_FORWARDED_FOR'</span>) &amp;&amp; strcasecmp(getenv(<span class="string">'HTTP_X_FORWARDED_FOR'</span>), <span class="string">'unknown'</span>)) &#123;</div><div class="line">        <span class="variable">$ip</span> = getenv(<span class="string">'HTTP_X_FORWARDED_FOR'</span>);</div><div class="line">    &#125; elseif (getenv(<span class="string">'REMOTE_ADDR'</span>) &amp;&amp; strcasecmp(getenv(<span class="string">'REMOTE_ADDR'</span>), <span class="string">'unknown'</span>)) &#123;</div><div class="line">        <span class="variable">$ip</span> = getenv(<span class="string">'REMOTE_ADDR'</span>);</div><div class="line">    &#125; elseif (isset(<span class="variable">$_SERVER</span>[<span class="string">'REMOTE_ADDR'</span>]) &amp;&amp; <span class="variable">$_SERVER</span>[<span class="string">'REMOTE_ADDR'</span>] &amp;&amp; strcasecmp(<span class="variable">$_SERVER</span>[<span class="string">'REMOTE_ADDR'</span>], <span class="string">'unknown'</span>)) &#123;</div><div class="line">        <span class="variable">$ip</span> = <span class="variable">$_SERVER</span>[<span class="string">'REMOTE_ADDR'</span>];</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">return</span> <span class="variable">$ip</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 获得用户设备的mac地址</div><div class="line"> * 通过arp执行控制台程序，得到控制台的返回，然后处理控制台的信息，从ip查询得到mac地址</div><div class="line"> * @<span class="built_in">return</span> unknown</div><div class="line"> */</div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">getMac</span></span>()</div><div class="line">&#123;</div><div class="line">	<span class="variable">$ip</span> =  getClientIp;</div><div class="line">	<span class="variable">$command</span> = <span class="string">"arp"</span>;</div><div class="line">	<span class="variable">$data</span> = <span class="built_in">exec</span>(<span class="variable">$command</span>, <span class="variable">$out</span>);</div><div class="line">	</div><div class="line">	<span class="variable">$ipstr</span> = <span class="string">""</span>;</div><div class="line">	<span class="keyword">for</span> (<span class="variable">$i</span> = 0; <span class="variable">$i</span> &lt; count(<span class="variable">$out</span>); <span class="variable">$i</span>++) &#123;</div><div class="line">		<span class="keyword">if</span> (strpos(<span class="variable">$out</span>[<span class="variable">$i</span>], <span class="variable">$ip</span>) === 0) &#123;</div><div class="line">			<span class="variable">$ipstr</span> = <span class="variable">$out</span>[<span class="variable">$i</span>];</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">if</span>(<span class="variable">$ipstr</span> != <span class="string">""</span>) &#123;</div><div class="line">		<span class="variable">$strs</span> = my_split(<span class="variable">$ipstr</span>, <span class="string">" "</span>);</div><div class="line">		<span class="built_in">return</span> <span class="variable">$strs</span>[2];</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">return</span> <span class="string">'找不到mac'</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">echo</span> getMac();</div><div class="line"><span class="built_in">exit</span>;</div><div class="line">  </div><div class="line">?&gt;</div></pre></td></tr></table></figure>
+<h3 id="三、云服务器使用情况"><a href="#三、云服务器使用情况" class="headerlink" title="三、云服务器使用情况"></a>三、云服务器使用情况</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">在（某里、某度、某腾）云服务器中执行 arp <span class="_">-a</span> 得到的映射记录并无最近的用户的访问ip，云服务器内部做了处理，所以无法获取到。</div><div class="line"></div><div class="line">在公司自己的私有服务器中可获取到</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/14/php/ffmpeg/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sir051223">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Forest">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/14/php/ffmpeg/" itemprop="url">linux suse安装ffmpeg及php使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-14T16:45:34+08:00">
+                2018-12-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Php/" itemprop="url" rel="index">
+                    <span itemprop="name">Php</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="一、获取ffmpeg"><a href="#一、获取ffmpeg" class="headerlink" title="一、获取ffmpeg"></a>一、获取ffmpeg</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wget https://www.ffmpeg.org/releases/ffmpeg-4..tar.bz2</div></pre></td></tr></table></figure>
+<h3 id="二、解压并编译安装"><a href="#二、解压并编译安装" class="headerlink" title="二、解压并编译安装"></a>二、解压并编译安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">tar -xjvf ffmpeg-4.0.tar.bz2</div><div class="line"></div><div class="line"><span class="built_in">cd</span> ffmpeg-4.0</div><div class="line"></div><div class="line">执行配置：./configure，此时或出现如下报错</div><div class="line"></div><div class="line">nasm/yasm not found or too old</div></pre></td></tr></table></figure>
+<h3 id="三、参数值传输接收不到的情况"><a href="#三、参数值传输接收不到的情况" class="headerlink" title="三、参数值传输接收不到的情况"></a>三、参数值传输接收不到的情况</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">第一次传递的参数，在服务端接收参数正常，修改参数名后，给参数赋值，在服务端出现接收不到参数值的现象</div><div class="line"></div><div class="line">调试1：安装soapui，发起调用 -&gt; 调用正常  判断：排除服务器端问题</div><div class="line"></div><div class="line">调试2：将参数值修改为固定字符串值，再发起调用 -&gt; 依然接收不到 判断：排除参数赋值失效</div><div class="line"></div><div class="line">调试3：改变参数位置，再发起调用 -&gt; 依然接收不到  判断：排除参数位置影响</div><div class="line"></div><div class="line">调试4：删除runtime缓存文件，再发起调用 -&gt; 依然接收不到  判断：排除程序缓存文件影响</div><div class="line"></div><div class="line">调试5：重启apache或php-fpm，再发起调用 -&gt; 依然接收不到  判断：排除web服务器环境问题</div><div class="line"></div><div class="line">调试6：本地wamp环境，发起调用 -&gt; 接收正常  判断：soap环境差异问题导致，查找到是soap缓存的问题</div><div class="line"></div><div class="line">修改代码</div><div class="line"></div><div class="line"><span class="variable">$soap</span> = new \SoapClient(<span class="string">'http://www.whatever.com/WebService.asmx?wsdl'</span>);</div><div class="line"></div><div class="line">为</div><div class="line"></div><div class="line"><span class="variable">$soap</span> = new \SoapClient(<span class="string">'http://www.whatever.com/WebService.asmx?wsdl'</span>, array(<span class="string">'cache_wsdl'</span> =&gt; 0));</div><div class="line"></div><div class="line">发起调用 -&gt; 接收正常</div></pre></td></tr></table></figure>
+<h3 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">参数名接收到，但参数值接收不到，这很怪异，一开始没有怀疑缓存原因，归根到底是对soap的基础理解得不够深刻。使用排除法定位问题的</div><div class="line">速度还是比较局限。透过现象去了解程序的本质，设计思想，对于分析、解决问题有很大的帮助</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/13/manage/cultrue/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1653,296 +1942,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/13/miniprogram/html/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sir051223">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Forest">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/13/miniprogram/html/" itemprop="url">小程序插入使用html代码</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-13T18:33:40+08:00">
-                2018-08-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/小程序/" itemprop="url" rel="index">
-                    <span itemprop="name">小程序</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="一、使用组件-web-view：（这种方法只能插入完整网页）"><a href="#一、使用组件-web-view：（这种方法只能插入完整网页）" class="headerlink" title="一、使用组件 web-view：（这种方法只能插入完整网页）"></a>一、使用组件 web-view：（这种方法只能插入完整网页）</h3><p>####<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">&lt;web-view src=<span class="string">"&#123;&#123;linkUrl&#125;&#125;"</span>&gt;&lt;/web-view&gt;</div></pre></td></tr></table></figure></p>
-<h3 id="二、使用官方组件-rich-text："><a href="#二、使用官方组件-rich-text：" class="headerlink" title="二、使用官方组件 rich-text："></a>二、使用官方组件 rich-text：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">官方链接：</div><div class="line"></div><div class="line">https://developers.weixin.qq.com/miniprogram/dev/component/rich-text.html</div><div class="line"></div><div class="line">&lt;!-- rich-text.wxml --&gt;</div><div class="line">&lt;rich-text nodes=<span class="string">"&#123;&#123;nodes&#125;&#125;"</span> bindtap=<span class="string">"tap"</span>&gt;&lt;/rich-text&gt;</div><div class="line"></div><div class="line">// rich-text.js</div><div class="line">Page(&#123;</div><div class="line">  data: &#123;</div><div class="line">    nodes: [&#123;</div><div class="line">      name: <span class="string">'div'</span>,</div><div class="line">      attrs: &#123;</div><div class="line">        class: <span class="string">'div_class'</span>,</div><div class="line">        style: <span class="string">'line-height: 60px; color: red;'</span></div><div class="line">      &#125;,</div><div class="line">      children: [&#123;</div><div class="line">        <span class="built_in">type</span>: <span class="string">'text'</span>,</div><div class="line">        text: <span class="string">'Hello&amp;nbsp;World!'</span></div><div class="line">      &#125;]</div><div class="line">    &#125;]</div><div class="line">  &#125;,</div><div class="line">  <span class="function"><span class="title">tap</span></span>() &#123;</div><div class="line">    console.log(<span class="string">'tap'</span>)</div><div class="line">  &#125;</div><div class="line">&#125;)</div><div class="line"></div><div class="line">使用太繁杂，建议使用方法三</div></pre></td></tr></table></figure>
-<h3 id="三、使用-wxParse"><a href="#三、使用-wxParse" class="headerlink" title="三、使用 wxParse"></a>三、使用 wxParse</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">wxParse使用详解链接：https://blog.csdn.net/zhuming3834/article/details/74280038/</div><div class="line"></div><div class="line">wxParse下载链接： https://github.com/icindy/wxParse</div><div class="line"></div><div class="line">使用这个方法，不管下文中的 article 是正常 html 代码，还是 html 转译字符串，都可直接使用。</div><div class="line"></div><div class="line">建议使用该方法，最终解析出来的node为方法二</div><div class="line"></div><div class="line">&#123;</div><div class="line"> <span class="string">"node"</span>: <span class="string">"article"</span>,</div><div class="line"> <span class="string">"nodes"</span>: [</div><div class="line">  &#123;</div><div class="line">   <span class="string">"node"</span>: <span class="string">"element"</span>,</div><div class="line">   <span class="string">"tag"</span>: <span class="string">"div"</span>,</div><div class="line">   <span class="string">"index"</span>: <span class="string">"0"</span>,</div><div class="line">   <span class="string">"tagType"</span>: <span class="string">"block"</span>,</div><div class="line">   <span class="string">"styleStr"</span>: <span class="string">"text-align:center;"</span>,</div><div class="line">   <span class="string">"attr"</span>: &#123;</div><div class="line">    <span class="string">"style"</span>: <span class="string">"text-align:center;"</span></div><div class="line">   &#125;,</div><div class="line">   <span class="string">"nodes"</span>: [</div><div class="line">    &#123;</div><div class="line">     <span class="string">"node"</span>: <span class="string">"text"</span>,</div><div class="line">     <span class="string">"text"</span>: <span class="string">"《静夜思》· 李白"</span>,</div><div class="line">     <span class="string">"textArray"</span>: [</div><div class="line">      &#123;</div><div class="line">       <span class="string">"node"</span>: <span class="string">"text"</span>,</div><div class="line">       <span class="string">"text"</span>: <span class="string">"《静夜思》· 李白"</span></div><div class="line">      &#125;</div><div class="line">     ],</div><div class="line">     <span class="string">"index"</span>: <span class="string">"0.0"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">     <span class="string">"node"</span>: <span class="string">"element"</span>,</div><div class="line">     <span class="string">"tag"</span>: <span class="string">"br"</span>,</div><div class="line">     <span class="string">"index"</span>: <span class="string">"0.1"</span>,</div><div class="line">     <span class="string">"tagType"</span>: <span class="string">"block"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">     <span class="string">"node"</span>: <span class="string">"text"</span>,</div><div class="line">     <span class="string">"text"</span>: <span class="string">"床前明月光，"</span>,</div><div class="line">     <span class="string">"textArray"</span>: [</div><div class="line">      &#123;</div><div class="line">       <span class="string">"node"</span>: <span class="string">"text"</span>,</div><div class="line">       <span class="string">"text"</span>: <span class="string">"床前明月光，"</span></div><div class="line">      &#125;</div><div class="line">     ],</div><div class="line">     <span class="string">"index"</span>: <span class="string">"0.2"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">     <span class="string">"node"</span>: <span class="string">"element"</span>,</div><div class="line">     <span class="string">"tag"</span>: <span class="string">"br"</span>,</div><div class="line">     <span class="string">"index"</span>: <span class="string">"0.3"</span>,</div><div class="line">     <span class="string">"tagType"</span>: <span class="string">"block"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">     <span class="string">"node"</span>: <span class="string">"text"</span>,</div><div class="line">     <span class="string">"text"</span>: <span class="string">"疑是地上霜。"</span>,</div><div class="line">     <span class="string">"textArray"</span>: [</div><div class="line">      &#123;</div><div class="line">       <span class="string">"node"</span>: <span class="string">"text"</span>,</div><div class="line">       <span class="string">"text"</span>: <span class="string">"疑是地上霜。"</span></div><div class="line">      &#125;</div><div class="line">     ],</div><div class="line">     <span class="string">"index"</span>: <span class="string">"0.4"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">     <span class="string">"node"</span>: <span class="string">"element"</span>,</div><div class="line">     <span class="string">"tag"</span>: <span class="string">"br"</span>,</div><div class="line">     <span class="string">"index"</span>: <span class="string">"0.5"</span>,</div><div class="line">     <span class="string">"tagType"</span>: <span class="string">"block"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">     <span class="string">"node"</span>: <span class="string">"text"</span>,</div><div class="line">     <span class="string">"text"</span>: <span class="string">"举头望明月，"</span>,</div><div class="line">     <span class="string">"textArray"</span>: [</div><div class="line">      &#123;</div><div class="line">       <span class="string">"node"</span>: <span class="string">"text"</span>,</div><div class="line">       <span class="string">"text"</span>: <span class="string">"举头望明月，"</span></div><div class="line">      &#125;</div><div class="line">     ],</div><div class="line">     <span class="string">"index"</span>: <span class="string">"0.6"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">     <span class="string">"node"</span>: <span class="string">"element"</span>,</div><div class="line">     <span class="string">"tag"</span>: <span class="string">"br"</span>,</div><div class="line">     <span class="string">"index"</span>: <span class="string">"0.7"</span>,</div><div class="line">     <span class="string">"tagType"</span>: <span class="string">"block"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">     <span class="string">"node"</span>: <span class="string">"text"</span>,</div><div class="line">     <span class="string">"text"</span>: <span class="string">"低头思故乡。"</span>,</div><div class="line">     <span class="string">"textArray"</span>: [</div><div class="line">      &#123;</div><div class="line">       <span class="string">"node"</span>: <span class="string">"text"</span>,</div><div class="line">       <span class="string">"text"</span>: <span class="string">"低头思故乡。"</span></div><div class="line">      &#125;</div><div class="line">     ],</div><div class="line">     <span class="string">"index"</span>: <span class="string">"0.8"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">     <span class="string">"node"</span>: <span class="string">"element"</span>,</div><div class="line">     <span class="string">"tag"</span>: <span class="string">"br"</span>,</div><div class="line">     <span class="string">"index"</span>: <span class="string">"0.9"</span>,</div><div class="line">     <span class="string">"tagType"</span>: <span class="string">"block"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">     <span class="string">"node"</span>: <span class="string">"element"</span>,</div><div class="line">     <span class="string">"tag"</span>: <span class="string">"img"</span>,</div><div class="line">     <span class="string">"index"</span>: <span class="string">"0.10"</span>,</div><div class="line">     <span class="string">"tagType"</span>: <span class="string">"inline"</span>,</div><div class="line">     <span class="string">"attr"</span>: &#123;</div><div class="line">      <span class="string">"src"</span>: <span class="string">"http://www.xiexingcun.com/Poetry/6/images/53e.jpg"</span>,</div><div class="line">      <span class="string">"alt"</span>: <span class="string">""</span></div><div class="line">     &#125;,</div><div class="line">     <span class="string">"imgIndex"</span>: 0,</div><div class="line">     <span class="string">"from"</span>: <span class="string">"article"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">     <span class="string">"node"</span>: <span class="string">"element"</span>,</div><div class="line">     <span class="string">"tag"</span>: <span class="string">"br"</span>,</div><div class="line">     <span class="string">"index"</span>: <span class="string">"0.11"</span>,</div><div class="line">     <span class="string">"tagType"</span>: <span class="string">"block"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">     <span class="string">"node"</span>: <span class="string">"element"</span>,</div><div class="line">     <span class="string">"tag"</span>: <span class="string">"img"</span>,</div><div class="line">     <span class="string">"index"</span>: <span class="string">"0.12"</span>,</div><div class="line">     <span class="string">"tagType"</span>: <span class="string">"inline"</span>,</div><div class="line">     <span class="string">"attr"</span>: &#123;</div><div class="line">      <span class="string">"src"</span>: <span class="string">"http://www.xiexingcun.com/Poetry/6/images/53.jpg"</span>,</div><div class="line">      <span class="string">"alt"</span>: <span class="string">""</span></div><div class="line">     &#125;,</div><div class="line">     <span class="string">"imgIndex"</span>: 1,</div><div class="line">     <span class="string">"from"</span>: <span class="string">"article"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">     <span class="string">"node"</span>: <span class="string">"element"</span>,</div><div class="line">     <span class="string">"tag"</span>: <span class="string">"br"</span>,</div><div class="line">     <span class="string">"index"</span>: <span class="string">"0.13"</span>,</div><div class="line">     <span class="string">"tagType"</span>: <span class="string">"block"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">     <span class="string">"node"</span>: <span class="string">"element"</span>,</div><div class="line">     <span class="string">"tag"</span>: <span class="string">"br"</span>,</div><div class="line">     <span class="string">"index"</span>: <span class="string">"0.14"</span>,</div><div class="line">     <span class="string">"tagType"</span>: <span class="string">"block"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">     <span class="string">"node"</span>: <span class="string">"element"</span>,</div><div class="line">     <span class="string">"tag"</span>: <span class="string">"img"</span>,</div><div class="line">     <span class="string">"index"</span>: <span class="string">"0.15"</span>,</div><div class="line">     <span class="string">"tagType"</span>: <span class="string">"inline"</span>,</div><div class="line">     <span class="string">"attr"</span>: &#123;</div><div class="line">      <span class="string">"src"</span>: <span class="string">"http://www.xiexingcun.com/Poetry/6/images/53b.jpg"</span>,</div><div class="line">      <span class="string">"alt"</span>: <span class="string">""</span></div><div class="line">     &#125;,</div><div class="line">     <span class="string">"imgIndex"</span>: 2,</div><div class="line">     <span class="string">"from"</span>: <span class="string">"article"</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">     <span class="string">"node"</span>: <span class="string">"element"</span>,</div><div class="line">     <span class="string">"tag"</span>: <span class="string">"br"</span>,</div><div class="line">     <span class="string">"index"</span>: <span class="string">"0.16"</span>,</div><div class="line">     <span class="string">"tagType"</span>: <span class="string">"block"</span></div><div class="line">    &#125;</div><div class="line">   ]</div><div class="line">  &#125;</div><div class="line"> ],</div><div class="line"> <span class="string">"images"</span>: [</div><div class="line">  &#123;</div><div class="line">   <span class="string">"node"</span>: <span class="string">"element"</span>,</div><div class="line">   <span class="string">"tag"</span>: <span class="string">"img"</span>,</div><div class="line">   <span class="string">"index"</span>: <span class="string">"0.10"</span>,</div><div class="line">   <span class="string">"tagType"</span>: <span class="string">"inline"</span>,</div><div class="line">   <span class="string">"attr"</span>: &#123;</div><div class="line">    <span class="string">"src"</span>: <span class="string">"http://www.xiexingcun.com/Poetry/6/images/53e.jpg"</span>,</div><div class="line">    <span class="string">"alt"</span>: <span class="string">""</span></div><div class="line">   &#125;,</div><div class="line">   <span class="string">"imgIndex"</span>: 0,</div><div class="line">   <span class="string">"from"</span>: <span class="string">"article"</span></div><div class="line">  &#125;,</div><div class="line">  &#123;</div><div class="line">   <span class="string">"node"</span>: <span class="string">"element"</span>,</div><div class="line">   <span class="string">"tag"</span>: <span class="string">"img"</span>,</div><div class="line">   <span class="string">"index"</span>: <span class="string">"0.12"</span>,</div><div class="line">   <span class="string">"tagType"</span>: <span class="string">"inline"</span>,</div><div class="line">   <span class="string">"attr"</span>: &#123;</div><div class="line">    <span class="string">"src"</span>: <span class="string">"http://www.xiexingcun.com/Poetry/6/images/53.jpg"</span>,</div><div class="line">    <span class="string">"alt"</span>: <span class="string">""</span></div><div class="line">   &#125;,</div><div class="line">   <span class="string">"imgIndex"</span>: 1,</div><div class="line">   <span class="string">"from"</span>: <span class="string">"article"</span></div><div class="line">  &#125;,</div><div class="line">  &#123;</div><div class="line">   <span class="string">"node"</span>: <span class="string">"element"</span>,</div><div class="line">   <span class="string">"tag"</span>: <span class="string">"img"</span>,</div><div class="line">   <span class="string">"index"</span>: <span class="string">"0.15"</span>,</div><div class="line">   <span class="string">"tagType"</span>: <span class="string">"inline"</span>,</div><div class="line">   <span class="string">"attr"</span>: &#123;</div><div class="line">    <span class="string">"src"</span>: <span class="string">"http://www.xiexingcun.com/Poetry/6/images/53b.jpg"</span>,</div><div class="line">    <span class="string">"alt"</span>: <span class="string">""</span></div><div class="line">   &#125;,</div><div class="line">   <span class="string">"imgIndex"</span>: 2,</div><div class="line">   <span class="string">"from"</span>: <span class="string">"article"</span></div><div class="line">  &#125;</div><div class="line"> ],</div><div class="line"> <span class="string">"imageUrls"</span>: [</div><div class="line">  <span class="string">"http://www.xiexingcun.com/Poetry/6/images/53e.jpg"</span>,</div><div class="line">  <span class="string">"http://www.xiexingcun.com/Poetry/6/images/53.jpg"</span>,</div><div class="line">  <span class="string">"http://www.xiexingcun.com/Poetry/6/images/53b.jpg"</span></div><div class="line"> ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/13/miniprogram/swiper/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sir051223">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Forest">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/13/miniprogram/swiper/" itemprop="url">小程序swiper轮播图，自定义样式，两种方法：原生方法和bindchange方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-13T18:28:23+08:00">
-                2018-08-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/小程序/" itemprop="url" rel="index">
-                    <span itemprop="name">小程序</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="一、通过原生方法"><a href="#一、通过原生方法" class="headerlink" title="一、通过原生方法"></a>一、通过原生方法</h3><h4 id="1、wxml"><a href="#1、wxml" class="headerlink" title="1、wxml"></a>1、wxml</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">  &lt;!-- 轮播图 --&gt;</div><div class="line">&lt;view class=<span class="string">'swiperBar'</span>&gt;</div><div class="line">  &lt;swiper duration=<span class="string">"1000"</span> indicator-dots=<span class="string">"&#123;&#123;true&#125;&#125;"</span> indicator-color=<span class="string">""</span> interval=<span class="string">"2000"</span> current=<span class="string">"0"</span> indicator-color=<span class="string">"#999"</span> indicator-active-color=<span class="string">"#ff8a00"</span> autoplay=<span class="string">"&#123;&#123;true&#125;&#125;"</span>&gt;</div><div class="line">    &lt;block&gt;</div><div class="line">      &lt;swiper-item&gt;</div><div class="line">        &lt;image src=<span class="string">"http://demo.sc.chinaz.com/Files/DownLoad/webjs1/201801/jiaoben5647/img/5.jpg"</span> /&gt;</div><div class="line">      &lt;/swiper-item&gt;</div><div class="line">      &lt;swiper-item&gt;</div><div class="line">        &lt;image src=<span class="string">"http://demo.sc.chinaz.com/Files/DownLoad/webjs1/201801/jiaoben5647/img/1.jpg"</span> /&gt;</div><div class="line">      &lt;/swiper-item&gt;</div><div class="line">      &lt;swiper-item&gt;</div><div class="line">        &lt;image src=<span class="string">"http://demo.sc.chinaz.com/Files/DownLoad/webjs1/201801/jiaoben5647/img/2.jpg"</span> /&gt;</div><div class="line">      &lt;/swiper-item&gt;</div><div class="line">    &lt;/block&gt;</div><div class="line">  &lt;/swiper&gt;</div><div class="line">&lt;/view&gt;</div></pre></td></tr></table></figure>
-<h4 id="2、wxss"><a href="#2、wxss" class="headerlink" title="2、wxss"></a>2、wxss</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line">  </div><div class="line">/* 轮播图部分 */ </div><div class="line">.swiperBar &#123;</div><div class="line">  width: 690rpx;</div><div class="line">  height: 337rpx;</div><div class="line">  margin: 0 auto;</div><div class="line">  position: relative;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">.swiperBar swiper &#123;</div><div class="line">  width: 100%;</div><div class="line">  height: 337rpx;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">.swiperBar image &#123;</div><div class="line">  width: 690rpx;</div><div class="line">  height: 310rpx;</div><div class="line">  -webkit-border-radius: 12rpx;</div><div class="line">  -moz-border-radius: 12rpx;</div><div class="line">  border-radius: 12rpx;</div><div class="line">  -webkit-box-shadow: 0 0 16rpx rgba(0, 0, 0, 0.25);</div><div class="line">  -moz-box-shadow: 0 0 16rpx rgba(0, 0, 0, 0.25);</div><div class="line">  box-shadow: 0 0 16rpx rgba(0, 0, 0, 0.25);</div><div class="line">&#125;</div><div class="line"> </div><div class="line">/* 设置点点的层级 */</div><div class="line"> </div><div class="line">.swiperBar .wx-swiper-dots.wx-swiper-dots-horizontal &#123;</div><div class="line">  position: absolute;</div><div class="line">  top: 328rpx;</div><div class="line">  z-index: 999;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">/* 设置点点的样式 */</div><div class="line"> </div><div class="line">.swiperBar .wx-swiper-dot &#123;</div><div class="line">  width: 8rpx;</div><div class="line">  display: inline-flex;</div><div class="line">  height: 8rpx;</div><div class="line">  margin-left: 12rpx;</div><div class="line">  justify-content: space-between;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">.swiperBar .wx-swiper-dot::before &#123;</div><div class="line">  content: <span class="string">''</span>;</div><div class="line">  flex-grow: 1;</div><div class="line">  background: <span class="comment">#999;</span></div><div class="line">  border-radius: 8rpx;</div><div class="line">  -webkit-border-radius: 8rpx;</div><div class="line">  -moz-border-radius: 8rxp;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">/* 当前点点的样式 */</div><div class="line"> </div><div class="line">.swiperBar .wx-swiper-dot-active::before &#123;</div><div class="line">  background: <span class="comment">#ff8a00;</span></div><div class="line">&#125;</div><div class="line"> </div><div class="line">.swiperBar .wx-swiper-dot.wx-swiper-dot-active &#123;</div><div class="line">  width: 18rpx;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="二、bindchange方法"><a href="#二、bindchange方法" class="headerlink" title="二、bindchange方法"></a>二、bindchange方法</h3><h4 id="1、wxml-1"><a href="#1、wxml-1" class="headerlink" title="1、wxml"></a>1、wxml</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;view class=<span class="string">"banner"</span>&gt;</div><div class="line">    &lt;swiper class=<span class="string">"bannerswipers"</span> autoplay=<span class="string">"&#123;&#123;autoplay&#125;&#125;"</span> current=<span class="string">"&#123;&#123;currentSwiper&#125;&#125;"</span> bindchange=<span class="string">"swiperChange"</span>&gt;  </div><div class="line">        &lt;block wx:<span class="keyword">for</span>=<span class="string">"&#123;&#123;imgs&#125;&#125;"</span>&gt;  </div><div class="line">            &lt;swiper-item&gt;  </div><div class="line">                 &lt;image src=<span class="string">"&#123;&#123;item.url&#125;&#125;"</span>&gt;&lt;/image&gt;  </div><div class="line">            &lt;/swiper-item&gt;  </div><div class="line">        &lt;/block&gt;  </div><div class="line">    &lt;/swiper&gt;  </div><div class="line">   &lt;!--重置小圆点的样式  --&gt;</div><div class="line">    &lt;view class=<span class="string">"bannerdots flex alignC flexC"</span>&gt;  </div><div class="line">        &lt;block wx:<span class="keyword">for</span>=<span class="string">"&#123;&#123;imgs&#125;&#125;"</span>&gt;  </div><div class="line">            &lt;view class=<span class="string">"bannerdot&#123;&#123;index == currentSwiper ? ' banneractive' : ''&#125;&#125;"</span>&gt;&lt;/view&gt;  </div><div class="line">        &lt;/block&gt;  </div><div class="line">    &lt;/view&gt;  </div><div class="line">&lt;/view&gt;</div></pre></td></tr></table></figure>
-<h4 id="2、wxss-1"><a href="#2、wxss-1" class="headerlink" title="2、wxss"></a>2、wxss</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div></pre></td><td class="code"><pre><div class="line"> </div><div class="line">.banner&#123;</div><div class="line">  height: auto;</div><div class="line">  position: relative;  </div><div class="line">&#125;</div><div class="line"> </div><div class="line">.bannerswipers&#123;  </div><div class="line">  width: 100%;</div><div class="line">  height: 350rpx; </div><div class="line">&#125;  </div><div class="line">.bannerswipers image&#123;  </div><div class="line">  width: 100%;</div><div class="line">  height: 100%;</div><div class="line">  display: block </div><div class="line">&#125;  </div><div class="line"> </div><div class="line">/*用来包裹所有的小圆点  */</div><div class="line">.bannerdots&#123;  </div><div class="line">  width: 750rpx;</div><div class="line">  height: 36rpx; </div><div class="line">  display: flex;</div><div class="line">  flex-direction: row;</div><div class="line">  position: absolute;</div><div class="line">  left:0;</div><div class="line">  bottom: 20rpx;</div><div class="line">&#125;  </div><div class="line">/*未选中时的小圆点样式 */</div><div class="line">.bannerdot&#123;  </div><div class="line">  width: 16rpx;  </div><div class="line">  height: 16rpx;   </div><div class="line">  margin-right: 26rpx;</div><div class="line">  background-color: yellow;</div><div class="line">  border-radius: 16rpx;</div><div class="line">&#125;  </div><div class="line">/*选中以后的小圆点样式  */</div><div class="line">.banneractive&#123;  </div><div class="line">  width: 32rpx;   </div><div class="line">  height: 16rpx;</div><div class="line">  background-color: coral;</div><div class="line">&#125;  </div><div class="line"> </div><div class="line">.flex &#123;</div><div class="line">  display: -webkit-box;</div><div class="line">  display: -moz-box;</div><div class="line">  display: -ms-flexbox;</div><div class="line">  display: -webkit-flex;</div><div class="line">  display: flex;</div><div class="line">  display: box;</div><div class="line">  flex-wrap: wrap;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">.alignC &#123;</div><div class="line">  /*元素居中*/</div><div class="line">  align-items: center;</div><div class="line">  -webkit-box-align: center;</div><div class="line">  -webkit-align-items: center;</div><div class="line">  -moz-align-items: center;</div><div class="line">  -ms-align-items: center;</div><div class="line">  -o-align-items: center;</div><div class="line">&#125;</div><div class="line">.flexC &#123;</div><div class="line">  -webkit-box-pack: center;</div><div class="line">  justify-content: center;</div><div class="line">  -webkit-justify-content: center;</div><div class="line">  -moz-justify-content: center;</div><div class="line">  -ms-justify-content: center;</div><div class="line">  -o-justify-content: center;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="3、js"><a href="#3、js" class="headerlink" title="3、js"></a>3、js</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">Page(&#123;</div><div class="line">  data: &#123;</div><div class="line">    imgs: [</div><div class="line">      &#123; url: <span class="string">'http://demo.sc.chinaz.com/Files/DownLoad/webjs1/201801/jiaoben5647/img/5.jpg'</span> &#125;,</div><div class="line">      &#123; url: <span class="string">'http://demo.sc.chinaz.com/Files/DownLoad/webjs1/201801/jiaoben5647/img/1.jpg'</span> &#125;,</div><div class="line">      &#123; url: <span class="string">'http://demo.sc.chinaz.com/Files/DownLoad/webjs1/201801/jiaoben5647/img/2.jpg'</span> &#125;</div><div class="line">    ],</div><div class="line">    currentSwiper: 0,</div><div class="line">    autoplay: <span class="literal">true</span></div><div class="line">  &#125;,</div><div class="line">  swiperChange: <span class="keyword">function</span> (e) &#123;</div><div class="line">    this.setData(&#123;</div><div class="line">      currentSwiper: e.detail.current</div><div class="line">    &#125;)</div><div class="line">  &#125;</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1993,7 +1992,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2048,7 +2047,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

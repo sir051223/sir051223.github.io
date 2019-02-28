@@ -94,37 +94,22 @@
 
 
 
-<meta name="description" content="1.目的  通过根据服务器目前状况，修改Mysql的系统参数，达到合理利用服务器现有资源，最大合理的提高MySQL性能
-2.服务器参数  32G内存、4个CPU,每个CPU 8核
-  centos 7
-3.修改MySQL配置打开MySQL配置文件my.cnf
-1vi  /etc/my.cnf
-修改back_log参数值:由默认的50修改为500
-1back_log=500
-修改back_log参数">
+<meta name="description" content="一、获取ffmpeg1wget https://www.ffmpeg.org/releases/ffmpeg-4..tar.bz2
+二、解压并编译安装12345678tar -xjvf ffmpeg-4.0.tar.bz2cd ffmpeg-4.0执行配置：./configure，此时或出现如下报错nasm/yasm not found or too old
+三、参数值传输接收不到的情况12345">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MySQL性能优化之参数配置">
-<meta property="og:url" content="http://yoursite.com/2018/10/24/sql/optimization/index.html">
+<meta property="og:title" content="linux suse安装ffmpeg及php使用">
+<meta property="og:url" content="http://yoursite.com/2018/12/14/php/ffmpeg/index.html">
 <meta property="og:site_name" content="Forest">
-<meta property="og:description" content="1.目的  通过根据服务器目前状况，修改Mysql的系统参数，达到合理利用服务器现有资源，最大合理的提高MySQL性能
-2.服务器参数  32G内存、4个CPU,每个CPU 8核
-  centos 7
-3.修改MySQL配置打开MySQL配置文件my.cnf
-1vi  /etc/my.cnf
-修改back_log参数值:由默认的50修改为500
-1back_log=500
-修改back_log参数">
-<meta property="og:updated_time" content="2018-10-24T10:03:39.303Z">
+<meta property="og:description" content="一、获取ffmpeg1wget https://www.ffmpeg.org/releases/ffmpeg-4..tar.bz2
+二、解压并编译安装12345678tar -xjvf ffmpeg-4.0.tar.bz2cd ffmpeg-4.0执行配置：./configure，此时或出现如下报错nasm/yasm not found or too old
+三、参数值传输接收不到的情况12345">
+<meta property="og:updated_time" content="2018-12-14T08:52:29.515Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MySQL性能优化之参数配置">
-<meta name="twitter:description" content="1.目的  通过根据服务器目前状况，修改Mysql的系统参数，达到合理利用服务器现有资源，最大合理的提高MySQL性能
-2.服务器参数  32G内存、4个CPU,每个CPU 8核
-  centos 7
-3.修改MySQL配置打开MySQL配置文件my.cnf
-1vi  /etc/my.cnf
-修改back_log参数值:由默认的50修改为500
-1back_log=500
-修改back_log参数">
+<meta name="twitter:title" content="linux suse安装ffmpeg及php使用">
+<meta name="twitter:description" content="一、获取ffmpeg1wget https://www.ffmpeg.org/releases/ffmpeg-4..tar.bz2
+二、解压并编译安装12345678tar -xjvf ffmpeg-4.0.tar.bz2cd ffmpeg-4.0执行配置：./configure，此时或出现如下报错nasm/yasm not found or too old
+三、参数值传输接收不到的情况12345">
 
 
 
@@ -153,13 +138,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/10/24/sql/optimization/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/12/14/php/ffmpeg/"/>
 
 
 
 
 
-  <title>MySQL性能优化之参数配置 | Forest</title>
+  <title>linux suse安装ffmpeg及php使用 | Forest</title>
   
 
 
@@ -286,7 +271,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/24/sql/optimization/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/14/php/ffmpeg/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sir051223">
@@ -303,7 +288,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">MySQL性能优化之参数配置</h1>
+          <h1 class="post-title" itemprop="name headline">linux suse安装ffmpeg及php使用</h1>
         
 
         <div class="post-meta">
@@ -315,8 +300,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-24T15:19:49+08:00">
-                2018-10-24
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-14T16:45:34+08:00">
+                2018-12-14
               </time>
             
 
@@ -338,8 +323,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Sql/" itemprop="url" rel="index">
-                    <span itemprop="name">Sql</span>
+                  <a href="/categories/Php/" itemprop="url" rel="index">
+                    <span itemprop="name">Php</span>
                   </a>
                 </span>
 
@@ -375,31 +360,10 @@
       
 
       
-        <h3 id="1-目的"><a href="#1-目的" class="headerlink" title="1.目的"></a>1.目的</h3><p>  通过根据服务器目前状况，修改Mysql的系统参数，达到合理利用服务器现有资源，最大合理的提高MySQL性能</p>
-<h3 id="2-服务器参数"><a href="#2-服务器参数" class="headerlink" title="2.服务器参数"></a>2.服务器参数</h3><p>  32G内存、4个CPU,每个CPU 8核</p>
-<p>  centos 7</p>
-<h3 id="3-修改MySQL配置"><a href="#3-修改MySQL配置" class="headerlink" title="3.修改MySQL配置"></a>3.修改MySQL配置</h3><p>打开MySQL配置文件my.cnf</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vi  /etc/my.cnf</div></pre></td></tr></table></figure>
-<p>修改back_log参数值:由默认的50修改为500</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">back_log=500</div></pre></td></tr></table></figure>
-<p>修改back_log参数值:由默认的50修改为500</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">back_log=500 </div><div class="line"></div><div class="line">back_log值指出在MySQL暂时停止回答新请求之前的短时间内多少个请求可以被存在堆栈中。</div></pre></td></tr></table></figure>
-<p>修改wait_timeout参数值</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wait_timeout=1800（单位为妙）</div><div class="line"></div><div class="line">wait_timeout是MySQL客户端的数据库连接闲置最大时间值。</div></pre></td></tr></table></figure>
-<p>修改max_connections参数值</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">max_connections=3000（单位为妙）</div><div class="line"></div><div class="line">max_connections是指MySql的最大连接数，如果服务器的并发连接请求量比较大，建议调高此值，以增加并行连接数量</div></pre></td></tr></table></figure>
-<p>修改max_user_connections值，由默认的0，修改为800</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">max_user_connections=800</div><div class="line"></div><div class="line">max_user_connections是指每个数据库用户的最大连接，设置为0表示不限制</div></pre></td></tr></table></figure>
-<p>修改thread_concurrency值，由目前默认的8，修改为64</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">thread_concurrency=64</div><div class="line"></div><div class="line">thread_concurrency应设为CPU核数的2倍. 比如有一个双核的CPU, 那thread_concurrency  </div><div class="line"></div><div class="line">的应该为4; 2个双核的cpu, thread_concurrency的值应为8.</div></pre></td></tr></table></figure>
-<p> default-storage-engine(设置MySQL的默认存储引擎)</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">default-storage-engine= InnoDB(设置InnoDB类型，另外还可以设置MyISAM类型)</div></pre></td></tr></table></figure>
-<h3 id="4、demo示例"><a href="#4、demo示例" class="headerlink" title="4、demo示例"></a>4、demo示例</h3><p>[mysqld]<br>basedir      = path          # 使用给定目录作为根目录(安装目录)。<br>datadir      = path          # 从给定目录读取数据库文件。<br>pid-file     = filename      # 为mysqld程序指定一个存放进程ID的文件(仅适用于UNIX/Linux系统);</p>
-<p>socket = /tmp/mysql.sock     # 为MySQL客户程序与服务器之间的本地通信指定一个套接字文件(Linux下默认是/var/lib/mysql/mysql.sock文件)<br>port             = 3306      # 指定MsSQL侦听的端口<br>key_buffer       = 384M      # key_buffer是用于索引块的缓冲区大小，增加它可得到更好处理的索引(对所有读和多重写)。<br>                               索引块是缓冲的并且被所有的线程共享，key_buffer的大小视内存大小而定。<br>table_cache      = 512       # 为所有线程打开表的数量。增加该值能增加mysqld要求的文件描述符的数量。可以避免频繁的打开数据表产生的开销<br>sort_buffer_size = 2M        # 每个需要进行排序的线程分配该大小的一个缓冲区。增加这值加速ORDER BY或GROUP BY操作。<br>                               注意：该参数对应的分配内存是每连接独占！如果有100个连接，那么实际分配的总共排序缓冲区大小为100×6=600MB<br>read_buffer_size = 2M        # 读查询操作所能使用的缓冲区大小。和sort_buffer_size一样，该参数对应的分配内存也是每连接独享。<br>query_cache_size = 32M       # 指定MySQL查询结果缓冲区的大小<br>read_rnd_buffer_size    = 8M # 改参数在使用行指针排序之后，随机读用的。<br>myisam_sort_buffer_size = 64M # MyISAM表发生变化时重新排序所需的缓冲<br>thread_concurrency      = 8  # 最大并发线程数，取值为服务器逻辑CPU数量×2，如果CPU支持H.T超线程，再×2<br>thread_cache            = 8  # #缓存可重用的线程数<br>skip-locking                 # 避免MySQL的外部锁定，减少出错几率增强稳定性。</p>
-<p>[mysqldump]<br>max_allowed_packet     = 16M # 服务器和客户端之间最大能发送的可能信息包</p>
-<p>[myisamchk]<br>key_buffer   = 256M<br>sort_buffer = 256M<br>read_buffer = 2M<br>write_buffer = 2M</p>
-<p>back_log = 384</p>
-
+        <h3 id="一、获取ffmpeg"><a href="#一、获取ffmpeg" class="headerlink" title="一、获取ffmpeg"></a>一、获取ffmpeg</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wget https://www.ffmpeg.org/releases/ffmpeg-4..tar.bz2</div></pre></td></tr></table></figure>
+<h3 id="二、解压并编译安装"><a href="#二、解压并编译安装" class="headerlink" title="二、解压并编译安装"></a>二、解压并编译安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">tar -xjvf ffmpeg-4.0.tar.bz2</div><div class="line"></div><div class="line"><span class="built_in">cd</span> ffmpeg-4.0</div><div class="line"></div><div class="line">执行配置：./configure，此时或出现如下报错</div><div class="line"></div><div class="line">nasm/yasm not found or too old</div></pre></td></tr></table></figure>
+<h3 id="三、参数值传输接收不到的情况"><a href="#三、参数值传输接收不到的情况" class="headerlink" title="三、参数值传输接收不到的情况"></a>三、参数值传输接收不到的情况</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">第一次传递的参数，在服务端接收参数正常，修改参数名后，给参数赋值，在服务端出现接收不到参数值的现象</div><div class="line"></div><div class="line">调试1：安装soapui，发起调用 -&gt; 调用正常  判断：排除服务器端问题</div><div class="line"></div><div class="line">调试2：将参数值修改为固定字符串值，再发起调用 -&gt; 依然接收不到 判断：排除参数赋值失效</div><div class="line"></div><div class="line">调试3：改变参数位置，再发起调用 -&gt; 依然接收不到  判断：排除参数位置影响</div><div class="line"></div><div class="line">调试4：删除runtime缓存文件，再发起调用 -&gt; 依然接收不到  判断：排除程序缓存文件影响</div><div class="line"></div><div class="line">调试5：重启apache或php-fpm，再发起调用 -&gt; 依然接收不到  判断：排除web服务器环境问题</div><div class="line"></div><div class="line">调试6：本地wamp环境，发起调用 -&gt; 接收正常  判断：soap环境差异问题导致，查找到是soap缓存的问题</div><div class="line"></div><div class="line">修改代码</div><div class="line"></div><div class="line"><span class="variable">$soap</span> = new \SoapClient(<span class="string">'http://www.whatever.com/WebService.asmx?wsdl'</span>);</div><div class="line"></div><div class="line">为</div><div class="line"></div><div class="line"><span class="variable">$soap</span> = new \SoapClient(<span class="string">'http://www.whatever.com/WebService.asmx?wsdl'</span>, array(<span class="string">'cache_wsdl'</span> =&gt; 0));</div><div class="line"></div><div class="line">发起调用 -&gt; 接收正常</div></pre></td></tr></table></figure>
+<h3 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">参数名接收到，但参数值接收不到，这很怪异，一开始没有怀疑缓存原因，归根到底是对soap的基础理解得不够深刻。使用排除法定位问题的</div><div class="line">速度还是比较局限。透过现象去了解程序的本质，设计思想，对于分析、解决问题有很大的帮助</div></pre></td></tr></table></figure>
       
     </div>
     
@@ -423,8 +387,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/23/sql/install/" rel="next" title="centos7下源码编译安装mysql5.6最新版本">
-                <i class="fa fa-chevron-left"></i> centos7下源码编译安装mysql5.6最新版本
+              <a href="/2018/12/13/manage/cultrue/" rel="next" title="良好的研发团队文化是怎样「长」成的">
+                <i class="fa fa-chevron-left"></i> 良好的研发团队文化是怎样「长」成的
               </a>
             
           </div>
@@ -433,8 +397,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/10/24/essay/recruit/" rel="prev" title="阿里技术面试的思路（转载）">
-                阿里技术面试的思路（转载） <i class="fa fa-chevron-right"></i>
+              <a href="/2019/02/28/php/getMac/" rel="prev" title="php通过ARP地址解析协议获取用户设备的mac地址">
+                php通过ARP地址解析协议获取用户设备的mac地址 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -560,7 +524,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-目的"><span class="nav-number">1.</span> <span class="nav-text">1.目的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-服务器参数"><span class="nav-number">2.</span> <span class="nav-text">2.服务器参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-修改MySQL配置"><span class="nav-number">3.</span> <span class="nav-text">3.修改MySQL配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、demo示例"><span class="nav-number">4.</span> <span class="nav-text">4、demo示例</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、获取ffmpeg"><span class="nav-number">1.</span> <span class="nav-text">一、获取ffmpeg</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、解压并编译安装"><span class="nav-number">2.</span> <span class="nav-text">二、解压并编译安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、参数值传输接收不到的情况"><span class="nav-number">3.</span> <span class="nav-text">三、参数值传输接收不到的情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五、总结"><span class="nav-number">4.</span> <span class="nav-text">五、总结</span></a></li></ol></div>
             
 
           </div>
